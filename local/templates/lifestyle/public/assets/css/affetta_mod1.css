@@ -62,3 +62,13 @@ body.min nav ul a.lessons_item_link {
     }
 
 }
+
+.login__image--image img{
+    width: 100%;
+    left: 0;
+}
+
+.login__form .error{
+    font-size: 18px;
+    font-weight: 500;
+}

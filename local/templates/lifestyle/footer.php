@@ -69,7 +69,7 @@ global $cont;
                 <div class="quiz__modal--body text">
                     Скоро администратор подтвердит вашу учетную запись и вы сможете приступить к обучению. Вам придет письмо на указанную при регистрации электронную почту.
                 </div>
-                <img src="<?=SITE_TEMPLATE_PATH?>/public/assets/images/reg.svg" class="quiz__decore-image" alt="">
+                <img src="<?=SITE_TEMPLATE_PATH?>/public/assets/images/reg_new.svg" class="quiz__decore-image" alt="">
             </div>
         </div>
     </div>

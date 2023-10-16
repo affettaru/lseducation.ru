@@ -2,7 +2,7 @@
 <?php
     if(!isset($_REQUEST['checkbox']) && $_REQUEST['checkbox'] !== "Y") {
         $result['status'] = "error";
-        $result['message'] = "Нет соглашения c Пользовательским соглашением и Политикой конфиденциальности";
+        $result['message'] = "Необходимо подтвердить согласие с Пользовательским соглашением и Политикой конфиденциальности";
     }
     if($_REQUEST['password'] !== $_REQUEST['confirm_password']){
         $result['status'] = "error";
@@ -26,7 +26,7 @@
                 $id_user = $f_ID;
                 if($id_user) {
                     $result['status'] = "error";
-                    $result['message'] = "Вы уже проходили тест";
+                    $result['message'] = "Вы уже зарегистрированы";
                 }
             }
         } else {
