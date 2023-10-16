@@ -1,0 +1,17 @@
+.error {
+	color: #a94442;
+	border: 0;
+    border-radius: 1px;
+    font-size: 14px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.uiz_block-ajax{
+	/*background: linear-gradient(38.75deg, rgb(107 212 255 / 10%) 14.73%, rgb(140 112 255 / 10%) 85.28%);*/
+}
+label .big-img{
+    font-size: 14px;
+    line-height: 150%;
+    color: #9B9B9B;
+}

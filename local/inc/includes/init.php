@@ -1,0 +1,277 @@
+<?
+require $_SERVER['DOCUMENT_ROOT'] . '/local/vendor/autoload.php';
+//defaults
+foreach($_POST as $key=>$val) if($val==$_POST[$key.'_default_value']) $_POST[$key] = '';
+// db for backup
+$DB->Query("SET wait_timeout=28800");
+
+CModule::IncludeModule('iblock');
+CModule::IncludeModule('catalog');
+CModule::IncludeModule('sale');
+
+//include($_SERVER['DOCUMENT_ROOT']."/local/inc/function.php");
+
+global $cont;
+$cont = Array();
+$iblock = CIBlock::GetList(Array(),Array("CODE"=>'index_text'))->GetNext();
+if($iblock){
+	$cs = CIBlockElement::GetList(Array("SORT"=>"ASC"),Array("IBLOCK_ID"=>$iblock["ID"],"ACTIVE"=>"Y","ACTIVE_DATE"=>"Y"), false, Array(), Array("ID", "IBLOCK_ID", "NAME", "DATE_ACTIVE_FROM","PROPERTY_*"));
+		while($ob = $cs->GetNextElement()){ 
+		 $arFields = $ob->GetFields();  
+		 $arProps = $ob->GetProperties();
+		$c = GetIBlockElement($c['ID']);
+		if(function_exists("t_item")) $c = t_item($c);
+		$can['auth_text'] = $arProps["auth_text"]["~VALUE"]["TEXT"];
+		$can['privet'] = $arProps["privet"]["~VALUE"]["TEXT"];
+		$cont[] = $can;
+	}
+}
+		 
+$dir = explode('/', $APPLICATION->GetCurDir());
+global $face;
+$face = Array();
+$iblockFace = CIBlock::GetList(Array(),Array("CODE"=>'arcticles'))->GetNext();
+    if($iblockFace){
+        $facebook = CIBlockElement::GetList(Array("SORT"=>"ASC"),Array("IBLOCK_ID"=>$iblockFace["ID"],"ACTIVE"=>"Y","ACTIVE_DATE"=>"Y","CODE"=>$dir[2]));
+            while($fb = $facebook->GetNext()){
+                $fb = GetIBlockElement($fb['ID']);  
+                $fb["URL"] = $dir;
+                $fb["TITLE"] = $fb["NAME"];
+                $fb["DESCRIPTION"] = $fb["DETAIL_TEXT"];
+                $fb["IMG"] = $_SERVER["HTTP_HOST"].''.crop($fb["DETAIL_PICTURE"],"250","250",1);
+                $face[] = $fb;
+            }
+    }
+global $news;
+$news = Array();
+$iblockNews = CIBlock::GetList(Array(),Array("CODE"=>'news'))->GetNext();
+    if($iblockNews){
+        $newsob = CIBlockElement::GetList(Array("SORT"=>"ASC"),Array("IBLOCK_ID"=>$iblockFace["ID"],"ACTIVE"=>"Y","ACTIVE_DATE"=>"Y","CODE"=>$dir[2]));
+            while($nw = $newsob->GetNext()){
+                $nw = GetIBlockElement($nw['ID']);  
+                $nw["URL"] = $dir;
+                $nw["TITLE"] = $nw["NAME"];
+                $nw["DESCRIPTION"] = $nw["DETAIL_TEXT"];
+                $nw["IMG"] = $_SERVER["HTTP_HOST"].''.crop($nw["DETAIL_PICTURE"],"250","250",1);
+                $news[] = $nw;
+            }
+    }
+
+// Уберем дурацкое quot из названия
+AddEventHandler("iblock", "OnBeforeIBlockElementUpdate", "renameQuot");
+AddEventHandler("iblock", "OnBeforeIBlockElementAdd", "renameQuot");
+// нам дано сделать адскую жесть - собрать все свойства в одно и привесить это все элементу
+function renameQuot(&$arFields){
+	if($arFields['NAME']!="") $arFields['NAME'] = unhtmlentities($arFields['NAME']);
+}
+
+
+AddEventHandler("main", "OnAfterUserAdd", "OnAfterUserRegisterHandler");
+AddEventHandler("main", "OnAfterUserRegister", "OnAfterUserRegisterHandler");
+function OnAfterUserRegisterHandler(&$arFields)
+{
+   if (intval($arFields["ID"])>0)
+   {
+      $toSend = Array();
+      $toSend["PASSWORD"] = $arFields["CONFIRM_PASSWORD"];
+      $toSend["EMAIL"] = $arFields["EMAIL"];
+      $toSend["USER_ID"] = $arFields["ID"];
+      $toSend["USER_IP"] = $arFields["USER_IP"];
+      $toSend["USER_HOST"] = $arFields["USER_HOST"];
+      $toSend["LOGIN"] = $arFields["LOGIN"];
+      $toSend["NAME"] = (trim ($arFields["NAME"]) == "")? $toSend["NAME"] = htmlspecialchars('<Не указано>'): $arFields["NAME"];
+      $toSend["LAST_NAME"] = (trim ($arFields["LAST_NAME"]) == "")? $toSend["LAST_NAME"] = htmlspecialchars('<Не указано>'): $arFields["LAST_NAME"];
+      CEvent::SendImmediate ("MY_NEW_USER", SITE_ID, $toSend);
+   }
+   return $arFields;
+}
+
+
+function kurs(&$idUser){
+	$rsGroups = \CUser::GetUserGroupEx($idUser);
+	while($arGroup = $rsGroups->GetNext()) {
+		$exp = explode("T_", $arGroup['STRING_ID']);
+		if($exp[1]!="") {
+			$urok[] = $exp[1];
+		}   
+	}
+	return $urok;
+}
+
+//событие изменения элемента
+AddEventHandler("iblock", "OnAfterIBlockElementAdd", "goodProps");
+function goodProps(&$arFields){
+	if($arFields['IBLOCK_ID']==1){
+			$enum = CIBlockPropertyEnum::GetList(Array(),Array("IBLOCK_ID"=>1,"PROPERTY_ID"=>21,"ID"=>$arFields["PROPERTY_VALUES"][21][0]["VALUE"]))->GetNext();
+
+			$group_id = $enum["VALUE"];
+
+			//попытки
+			$attempt = 'UF_ATTEMPTS_'.$group_id;
+			addUserProperty($attempt, '2', "string", "Попытки сдачи теста ".$group_id."й экзамен");
+			//dump($id); die();
+
+			//ответы
+			$answer = 'UF_ANSWER_'.$group_id;
+			addUserProperty($answer, $group_id.'0', "string", "Ответы квиза ".$group_id."й экзамен");
+
+			//кол-во правильных
+			$ext = 'UF_EXT_'.$group_id;
+			addUserProperty($ext, $group_id.'0', "string", "Кол-во правильных ответов ".$group_id."й экзамен");
+
+			//кол-во неправильных
+			$noext = 'UF_NOEXT_'.$group_id;
+			addUserProperty($noext, $group_id.'0', "string", "Кол-во неправильных ответов ".$group_id."й экзамен");
+
+			//экзамен сдан
+			$sdan = 'UF_SDAN_'.$group_id;
+			addUserProperty($sdan, $group_id.'0', "boolean", $group_id."й Экзамен сдан?");
+
+			//создаем группу
+			addGroup($group_id);
+	}
+}
+
+//событие удаления элемента
+AddEventHandler("iblock", "OnBeforeIBlockElementDelete", "OnIBlockElementDelete");
+function OnIBlockElementDelete($ID){
+	$stacks = CIBlockElement::GetList(Array(), Array("IBLOCK_ID"=>1, "ID"=>$ID), false, false, Array("ID", "IBLOCK_ID","PROPERTY_num"))->GetNext();
+	if($stacks["ID"]){
+
+		//удалим группу
+		deleteGroup($stacks["PROPERTY_NUM_VALUE"]);
+
+		//удалим свойства
+			//попытки
+			$attempt = 'UF_ATTEMPTS_'.$stacks["PROPERTY_NUM_VALUE"];
+			deleteUserProperty($attempt);
+
+			//ответы
+			$answer = 'UF_ANSWER_'.$stacks["PROPERTY_NUM_VALUE"];
+			deleteUserProperty($answer);
+
+			//кол-во правильных
+			$ext = 'UF_EXT_'.$stacks["PROPERTY_NUM_VALUE"];
+			deleteUserProperty($ext);
+
+			//кол-во неправильных
+			$noext = 'UF_NOEXT_'.$stacks["PROPERTY_NUM_VALUE"];
+			deleteUserProperty($noext);
+
+			//экзамен сдан
+			$sdan = 'UF_SDAN_'.$stacks["PROPERTY_NUM_VALUE"];
+			deleteUserProperty($sdan);
+
+	}
+
+}
+
+
+\Bitrix\Main\EventManager::getInstance()->addEventHandlerCompatible( 
+	'sale', 
+	'OnSaleComponentOrderProperties', 
+	'SaleOrderEvents::fillLocation'
+); 
+
+class SaleOrderEvents 
+{
+	function fillLocation(&$arUserResult, $request, &$arParams, &$arResult) 
+	{
+		$registry = \Bitrix\Sale\Registry::getInstance(\Bitrix\Sale\Registry::REGISTRY_TYPE_ORDER);
+		$orderClassName = $registry->getOrderClassName();
+		$order = $orderClassName::create(\Bitrix\Main\Application::getInstance()->getContext()->getSite());
+		$propertyCollection = $order->getPropertyCollection();
+
+		foreach ($propertyCollection as $property)
+		{
+			if ($property->isUtil())
+				continue;
+			$arProperty = $property->getProperty();
+			if(
+				$arProperty['TYPE'] === 'LOCATION' 
+				&& array_key_exists($arProperty['ID'],$arUserResult["ORDER_PROP"])
+				&& !$request->getPost("ORDER_PROP_".$arProperty['ID'])
+				&& (
+					!is_array($arOrder=$request->getPost("order"))
+					|| !$arOrder["ORDER_PROP_".$arProperty['ID']]
+				)
+			) {
+				$arUserResult["ORDER_PROP"][$arProperty['ID']] = CURRENT_CITY_CODE;
+			}
+		}
+	}
+}
+function fsize($path)
+{
+	$fp = fopen($path,"r");
+	$inf = stream_get_meta_data($fp);
+	fclose($fp);
+	foreach($inf["wrapper_data"] as $v)
+	if (stristr($v,"content-length"))
+	{
+		$v = explode(":",$v);
+		return trim($v[1]);
+	}
+}
+
+function formatBytes($size, $precision = 2){
+    $base = log($size, 1024);
+    $suffixes = array('Bytes', 'Kb', 'Mb', 'Gb', 'Tb');
+    return round(pow(1024, $base - floor($base)), $precision) .' '. $suffixes[floor($base)];
+}
+
+AddEventHandler("main", "OnBeforeUserUpdate", Array("MyClass", "OnBeforeUserUpdateHandler"));
+
+class MyClass
+{
+    function OnBeforeUserUpdateHandler(&$arFields)
+    {
+	global $USER;
+	$USER->GetID();
+	$arUser = CUser::GetByID($USER->GetID())->GetNext();
+	$ids = kurs($USER->GetID());
+	$stack = array_pop($ids);
+	$stacks = CIBlockElement::GetList(Array(), Array("IBLOCK_ID"=>1, "PROPERTY_NUM_VALUE"=>$stack, "ACTIVE_DATE"=>"Y", "ACTIVE"=>"Y"), false, Array("nPageSize"=>50), Array("ID", "IBLOCK_ID", "NAME", "DATE_ACTIVE_FROM","PROPERTY_binding"));
+	//Посчитаем кол-во вопросов
+	while($obStack = $stacks->GetNext()){ 
+		$ob[] = $obStack;
+		if($obStack["PROPERTY_BINDING_VALUE"]!="") {$ascount[] = $obStack["PROPERTY_BINDING_VALUE"];}
+	}
+	//Проверим сколько вопросов ответил пользователь и сравним с изначальным кл-ом
+	$numOtvet = $arFields["UF_EXT_".$stack]+$arFields["UF_NOEXT_".$stack];
+		if($numOtvet >= count($ascount)) {
+			if($arFields["UF_NOEXT".$stack]>0 || $arFields["UF_EXT_".$stack]=="") {
+				$arFields["UF_SDAN_".$stack]=0;
+			} else {
+				if($arFields["UF_EXT_".$stack]>0){$arFields["UF_SDAN_".$stack]=1;} else {$arFields["UF_SDAN_".$stack]=$arFields["UF_SDAN_".$stack];}
+				
+			}
+		}
+    }
+}
+
+AddEventHandler("main", "OnAfterUserLogin", "OnAfterUserLoginHandler");
+
+function OnAfterUserLoginHandler(&$arFields)
+{
+	
+	//$Users = CUser::GetList(($by="personal_country"), ($order="desc"), array("ID"=>$arFields["USER_ID"]))->Fetch();
+	$Users = CUser::GetByID($arFields["USER_ID"])->Fetch();
+
+	$arGroupAvalaible = array('1'); 
+	$arGroups = CUser::GetUserGroup($Users["ID"]);
+	$result_intersect = array_intersect($arGroupAvalaible, $arGroups);
+	if(!$result_intersect && $Users["UF_DATE"]!="1"){
+		$date = strtotime(date("d.m.Y H:i:s", strtotime("-1 month")));
+		$reg_date = strtotime($Users["DATE_REGISTER"]);
+
+		if($date > $reg_date){
+			$user = new CUser;
+			$user->Update($Users["ID"], array("BLOCKED"=>"Y"));
+			$user->Logout();
+		}
+	}
+
+}
+
+?>

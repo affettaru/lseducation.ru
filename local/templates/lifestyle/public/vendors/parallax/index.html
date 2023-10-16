@@ -1,0 +1,111 @@
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="css/simpleParallax.min.css">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="js/simpleParallax.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Lato:100,300');
+
+        body {
+            background-color: #00e194;
+            color: #ffffff;
+            font-family: 'Lato', sans-serif;
+            letter-spacing: 2px;
+            font-weight: 100;
+            text-shadow: 2px 1px rgba(0, 0, 0, 0.25);
+        }
+
+        .parallax__item_text {
+            margin: 40% auto 0 auto;
+            font-size: 46px;
+            line-height: 46px;
+            height: 46px;
+            text-align: center;
+        }
+
+        .parallax__item_shape_rectangle {
+            display: block;
+            margin: 20% 0 0 15%;
+            text-align: center;
+            border: solid 9px #cddc39;
+            height: 100px;
+            width: 200px;
+        }
+
+        .parallax__item_shape_rectangle-shadow {
+            display: block;
+            margin: 21% 0 0 16%;
+            text-align: center;
+            border: solid 9px rgba(0, 0, 0, 0.1);
+            height: 100px;
+            width: 200px;
+        }
+
+        .parallax__item_shape_square {
+            display: block;
+            margin: 50% 0 0 50%;
+            border: solid 9px #fdc689;
+            height: 120px;
+            width: 120px;
+            -ms-transform: rotate(-30deg);
+            -webkit-transform: rotate(-30deg);
+            transform: rotate(-30deg);
+        }
+
+        .parallax__item_shape_square-shadow {
+            display: block;
+            margin: 51% 0 0 51%;
+            border: solid 9px rgba(0, 0, 0, 0.1);
+            height: 120px;
+            width: 120px;
+            -ms-transform: rotate(-30deg);
+            -webkit-transform: rotate(-30deg);
+            transform: rotate(-30deg);
+        }
+
+        .parallax__item_shape_circle {
+            display: block;
+            margin: 15% 0 0 65%;
+            border-radius: 50%;
+            border: solid 9px #039be5;
+            height: 120px;
+            width: 120px;
+        }
+
+        .parallax__item_shape_circle-shadow {
+            display: block;
+            margin: 16% 0 0 66%;
+            border-radius: 50%;
+            border: solid 9px rgba(0, 0, 0, 0.1);
+            height: 120px;
+            width: 120px;
+        }
+    </style>
+</head>
+<body>
+<div class="parallax" data-parallax-axis="both" data-parallax-scope="global" data-parallax-detect="mouseover">
+    <div class="parallax__item" data-parallax-depth="10">
+        <span class="parallax__item_shape_rectangle-shadow"></span>
+    </div>
+    <div class="parallax__item" data-parallax-depth="3">
+        <span class="parallax__item_shape_circle-shadow"></span>
+    </div>
+    <div class="parallax__item" data-parallax-depth="5">
+        <span class="parallax__item_shape_square-shadow"></span>
+    </div>
+    <div class="parallax__item" data-parallax-depth="20">
+        <span class="parallax__item_shape_rectangle"></span>
+    </div>
+    <div class="parallax__item" data-parallax-depth="6">
+        <span class="parallax__item_shape_circle"></span>
+    </div>
+    <div class="parallax__item" data-parallax-depth="10">
+        <span class="parallax__item_shape_square"></span>
+    </div>
+    <div class="parallax__item parallax__item_text" data-parallax-depth="30" data-parallax-offset-y="-18">
+        SimpleParallax.js
+    </div>
+</div>
+</body>
+</html>

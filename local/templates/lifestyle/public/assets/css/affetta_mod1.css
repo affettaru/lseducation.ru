@@ -1,0 +1,64 @@
+.login__form-courses_mod1 .login__form-courses-item-logo{
+    max-height: 20px;
+}
+.login__form-courses_mod1 .login__form-courses-item-logo-wildberries{
+    max-height: 30px;
+}
+.login__form-courses_mod1 .login__form-courses-item {
+    display: flex;
+    align-items: center;
+}
+.login__form-courses_mod1 .login__form form [type="radio"] + label {
+    display: flex;
+    align-items: center;
+}
+.login__form form .login__form-courses_mod1 [type="radio"] + label::before {
+    top: 0;
+    margin: auto;
+    bottom: 0;
+}
+
+nav ul a.lessons_item_link, nav ul a.lessons_item_link.current {
+    background-position: 40px center !important;
+}
+
+nav ul li a.lessons_item_link {
+    padding: 18px 20px 13px 80px !important;
+    text-decoration: none;
+    width: 100%;
+    display: block;
+}
+body.min nav ul a.lessons_item_link, body.min nav ul a.lessons_item_link.current {
+    background-position: center 10px !important;
+}
+body.min nav ul a.lessons_item_link {
+    margin-bottom: 10px;
+    padding: 0 0 10px !important;
+    background-position: center 10px !important;
+}
+
+@media (max-width: 1000px) {
+    body.show-menu nav.float {
+        box-shadow: 4px 4px 10px 10px rgba(0,0,0,0.1);
+    }
+    nav .float__lessons strong {
+        margin: 0 20px 20px;
+    }
+    nav.head_menu_mod1 ul a.lessons_item_link, nav.head_menu_mod1 ul a.lessons_item_link.current {
+        background-position: 20px center !important;
+    }
+    nav.head_menu_mod1 ul a.lessons_item_link::before, nav.head_menu_mod1 ul a.lessons_item_link.current::before {
+        left: auto !important;
+    }
+    nav.head_menu_mod1 .oz {
+        padding: 11px 20px 11px 20px;
+    }
+    nav.head_menu_mod1 .float__lessons {
+        padding: 40px 0px 20px;
+    }
+    nav.head_menu_mod1 ul li a.lessons_item_link {
+        padding: 18px 20px 13px 65px !important;
+        text-decoration: none;
+    }
+
+}
