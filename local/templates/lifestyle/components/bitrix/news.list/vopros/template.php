@@ -25,7 +25,7 @@ $answers = explode('|', $answers);
 ?>
 <?$Item = array();
 foreach($arResult["ITEMS"] as $key => $arItem):?>
-	<?
+<?
 	$this->AddEditAction($arItem['ID'], $arItem['EDIT_LINK'], CIBlock::GetArrayByID($arItem["IBLOCK_ID"], "ELEMENT_EDIT"));
 	$this->AddDeleteAction($arItem['ID'], $arItem['DELETE_LINK'], CIBlock::GetArrayByID($arItem["IBLOCK_ID"], "ELEMENT_DELETE"), array("CONFIRM" => GetMessage('CT_BNL_ELEMENT_DELETE_CONFIRM')));
 if($arItem["PROPERTIES"]["vopros_text"]["VALUE"]) {
@@ -89,109 +89,138 @@ foreach ($saveAnswers as $key => $value) {
 
 
 ?>
-		<?foreach ($Item as $key => $value) {
+<?foreach ($Item as $key => $value) {
 
 // echo '<pre>';
 // print_r($value["ID"]);
 // echo '</pre>';
 			if((count($arResult["ITEMS"])=='1') && (($activeElements - 1) > $goodAnswers)){?>
-				<div class="uiz-ajax">
-			
-	
-			        <div class="quiz__modal--wrapper active">
-	          <div class="quiz__modal--header">
-                  <h3>К сожалению, в тесте допущены ошибки, пройдите его заново.</h3>
-	          		          </div>
-	          <div class="quiz__modal--body">
-	            <form class="quiz__form quiz_sub_form" id="form" action="/local/templates/lifestyle/ajax/quiz_restart.php">
-				<input type="hidden" name="vopros_id" value="<?=$value["ID"]?>">
-				<input type="hidden" name="COUNT" value="<?=count($arResult["ITEMS"])?>">
-	            <input type="hidden" name="NUM" value="<?=$arParams["NUM"]?>">
-				<input type="hidden" name="user" value="<?=$USER->GetID()?>">
-				<input type="hidden" name="test" value="<?=$arParams['NUM']?>">
-				<input type="hidden" name="restart" value="Y">
-	              <button id="<?=$value["ID"]?>" data_id="<?=$arParams["NUM_VOPROS"];?>" type="submit" class="button-secondary button quiz__modal-button btn">
-                      <span>
-                          Пройти тест заново<picture><source srcset="/local/templates/lifestyle/public/assets/images/svg/arrow-bottom-right.svg" type="image/webp"><img src="/local/templates/lifestyle/public/assets/images/svg/arrow-bottom-right.svg" alt=""></picture>
-                      </span>
-                  </button>
-	              	            </form>
-	          </div>
-			</div> 
-				</div>
-				
-			<?} else {
+<div class="uiz-ajax">
+
+
+    <div class="quiz__modal--wrapper active">
+        <div class="quiz__modal--header flex flex-sb">
+			<div>
+				<h3>Упс! Нам очень жаль. <br />Вы не сдали экзамен.</h3>
+				<p>У вас есть возможность пройти тест заново. <br />Ваши результаты будут отправлены в чат участников.</p>
+			</div>
+			<img class="fail-img" src="/local/templates/lifestyle/public/assets/images/fail.svg">
+        </div>
+
+        <div class="quiz__modal--body">
+            <form class="quiz__form quiz_sub_form" id="form" action="/local/templates/lifestyle/ajax/quiz_restart.php">
+                <input type="hidden" name="vopros_id" value="<?=$value["ID"]?>">
+                <input type="hidden" name="COUNT" value="<?=count($arResult["ITEMS"])?>">
+                <input type="hidden" name="NUM" value="<?=$arParams["NUM"]?>">
+                <input type="hidden" name="user" value="<?=$USER->GetID()?>">
+                <input type="hidden" name="test" value="<?=$arParams['NUM']?>">
+                <input type="hidden" name="restart" value="Y">
+                <button id="<?=$value["ID"]?>" data_id="<?=$arParams["NUM_VOPROS"];?>" type="submit"
+                    class="button-secondary button quiz__modal-button btn">
+                    <span>
+                        Пройти тест заново<picture>
+                            <source srcset="/local/templates/lifestyle/public/assets/images/svg/arrow-bottom-right.svg"
+                                type="image/webp"><img
+                                src="/local/templates/lifestyle/public/assets/images/svg/arrow-bottom-right.svg" alt="">
+                        </picture>
+                    </span>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<?} else {
 			
 			if($value["type"]=='radio') {$fieldset = 'image';} elseif($value["type"]=='text') {$fieldset = 'text';} elseif($value["type"]=='checkbox') {$fieldset = 'checkbox';}?>
-	        <div class="quiz__modal--wrapper <?if($n[0] == $i):?>active<?endif;?>">
-	          <div class="quiz__modal--header"><span>вопрос <?=$i?> / <?=$arParams["BINDING"]?></span>
-                  <h3><?=$value["vopros"]?></h3>
-	          	<?if($value["type"]=='checkbox'): $photo = crop($value["photo_checkbox"],820,300,1);?>
-	          	<?if($photo){?>
-	                <div class="quiz__modal--header-imm">
-	                  <img src="<?=$photo?>">
-	                </div>
-                <?}?>
-              <?endif;?>
-	          </div>
-	          <div class="quiz__modal--body">
-	            <form class="quiz__form quiz_sub_form" id="form" action="<?=SITE_TEMPLATE_PATH?>/ajax/quiz.php">
-	            <input type="hidden" name="vopros_id" value="<?=$value["ID"]?>">
-	            <input type="hidden" name="NUM" value="<?=$arParams["NUM"]?>">
-	            <?if(count($arResult["ITEMS"])=='1'):?><input type="hidden" name="SUB" value="Y"><?endif;?>
-	            <input type="hidden" name="COUNT" value="<?=count($arResult["ITEMS"])?>">
-	              <fieldset class="quiz__form--<?=$fieldset?>">
-	              	<?if($value["type"]=='radio') {
+<div class="quiz__modal--wrapper <?if($n[0] == $i):?>active<?endif;?>">
+    <div class="quiz__modal--header"><span>вопрос <?=$i?> / <?=$arParams["BINDING"]?></span>
+        <h3><?=$value["vopros"]?></h3>
+        <?if($value["type"]=='checkbox'): $photo = crop($value["photo_checkbox"],820,300,1);?>
+        <?if($photo){?>
+        <div class="quiz__modal--header-imm">
+            <img src="<?=$photo?>">
+        </div>
+        <?}?>
+        <?endif;?>
+    </div>
+    <div class="quiz__modal--body">
+        <form class="quiz__form quiz_sub_form" id="form" action="<?=SITE_TEMPLATE_PATH?>/ajax/quiz.php">
+            <input type="hidden" name="vopros_id" value="<?=$value["ID"]?>">
+            <input type="hidden" name="NUM" value="<?=$arParams["NUM"]?>">
+            <?if(count($arResult["ITEMS"])=='1'):?><input type="hidden" name="SUB" value="Y">
+            <?endif;?>
+            <input type="hidden" name="COUNT" value="<?=count($arResult["ITEMS"])?>">
+            <fieldset class="quiz__form--<?=$fieldset?>">
+                <?if($value["type"]=='radio') {
 	              		foreach ($value["photo_radio"] as $photo) {
               			$arFile = CFile::GetFileArray($photo);
 	              		$URL = crop($photo,500,500,1);
 						?>
-		                <label>
-		                  <input type="radio" name="img" value="<?=$arFile["DESCRIPTION"]?>" <?=in_array($arFile["DESCRIPTION"], $saveAnswers[$value["ID"]])?'checked':''?>>
-		                  <div class="image">
-                              <span></span>
-                              <img src="<?=$URL?>">
-                              <p>
-                              	<?=$arFile["DESCRIPTION"]?>
-                              	<?if($value["down_img_radio"]=='Да'){?></br><a class="big-img" href="<?=$arFile["SRC"];?>" download>Скачать исходник</a><?}?>
-                              </p>
-		                  </div>
-		                </label>
-	                <?	}
+                <label>
+                    <input type="radio" name="img" value="<?=$arFile["DESCRIPTION"]?>"
+                        <?=in_array($arFile["DESCRIPTION"], $saveAnswers[$value["ID"]])?'checked':''?>>
+                    <div class="image">
+                        <span></span>
+                        <img src="<?=$URL?>">
+                        <p>
+                            <?=$arFile["DESCRIPTION"]?>
+                            <?if($value["down_img_radio"]=='Да'){?></br><a class="big-img" href="<?=$arFile["SRC"];?>"
+                                download>Скачать исходник</a>
+                            <?}?>
+                        </p>
+                    </div>
+                </label>
+                <?	}
 	            	} elseif($value["type"]=='text') {?>
-			            <label>
-		                  <input type="text" name="text" placeholder="Введите вариант ответа">
-		                </label>
-	            	<?} elseif($value["type"]=='checkbox') {
+                <label>
+                    <input type="text" name="text" placeholder="Введите вариант ответа">
+                </label>
+                <?} elseif($value["type"]=='checkbox') {
 	            		$check=0;
 	            		foreach ($value["varianty_checkbox"] as $checkbox) {?>
-				            <label>
-			                  <input type="checkbox" name="check[<?=$check?>]" value="<?=$checkbox?>" <?=in_array($checkbox, $saveAnswers[$value["ID"]])?'checked':''?>>
-			                  <p><?=$checkbox?></p>
-			                </label>
-	            	<?	$check++;}
+                <label>
+                    <input type="checkbox" name="check[<?=$check?>]" value="<?=$checkbox?>"
+                        <?=in_array($checkbox, $saveAnswers[$value["ID"]])?'checked':''?>>
+                    <p><?=$checkbox?></p>
+                </label>
+                <?	$check++;}
 	            	}?>
-	              </fieldset>
-				  <div class="button_wrapper">
-				 	 <?if(count($arResult["ITEMS"])!=$activeElements){?>
-					<button type="button" id="<?=$arParams['BACK_ID']?>" data_id="<?=$arParams["NUM"];?>" class="button-secondary button quiz__modal-button btn button-back">
-						<span>
-								Предыдущий вопрос
-						</span>
-					</button>
-					<?}?>
+            </fieldset>
+            <div class="button_wrapper">
+                <?if(count($arResult["ITEMS"])!=$activeElements){?>
+                <button type="button" id="<?=$arParams['BACK_ID']?>" data_id="<?=$arParams["NUM"];?>"
+                    class="button-secondary button quiz__modal-button btn button-back">
+                    <span>
+                        Предыдущий вопрос
+                    </span>
+                </button>
+                <?}?>
 
-					<button <?if(count($arResult["ITEMS"])==$activeElements){?>style="margin-left:auto"<?}?>type="submit" id="<?=$value["ID"]?>" data_id="<?=$arParams["NUM_VOPROS"];?>" class="button-secondary button quiz__modal-button btn" <?=is_array($saveAnswers[$value["ID"]])!=''?'':'disabled="disabled"'?>>
-						<span>
-							<?if(count($arResult["ITEMS"])=='1'):?>Завершить<?else:?>Следующий вопрос<?endif;?><picture><source srcset="/local/templates/lifestyle/public/assets/images/svg/arrow-bottom-right.svg" type="image/webp"><img src="/local/templates/lifestyle/public/assets/images/svg/arrow-bottom-right.svg" alt=""></picture>
-						</span>
-					</button>
-				  </div>
-	              <?/*
-	              	<input type="submit" id="as-click<?=$value["ID"]?>" name="submit" value="<?if($i == count($arResult["ITEMS"])):?>Завершить<?else:?>Отправить<?endif;?>">
-	              */?>
-	            </form>
-	          </div>
-			</div> 
-		<?$i++;
+                <button <?if(count($arResult["ITEMS"])==$activeElements){?>style="margin-left:auto"
+                    <?}?>type="submit" id="<?=$value["ID"]?>" data_id="<?=$arParams["NUM_VOPROS"];?>"
+                    class="button-secondary button quiz__modal-button btn"
+                    <?=is_array($saveAnswers[$value["ID"]])!=''?'':'disabled="disabled"'?>>
+                    <span>
+                        <?if(count($arResult["ITEMS"])=='1'):?>Завершить
+                        <?else:?>Следующий вопрос
+                        <?endif;?>
+                        <picture>
+                            <source srcset="/local/templates/lifestyle/public/assets/images/svg/arrow-bottom-right.svg"
+                                type="image/webp"><img
+                                src="/local/templates/lifestyle/public/assets/images/svg/arrow-bottom-right.svg" alt="">
+                        </picture>
+                    </span>
+                </button>
+            </div>
+            <?/*
+	              	<input type="submit" id="as-click<?=$value["ID"]?>" name="submit" value="
+            <?if($i == count($arResult["ITEMS"])):?>Завершить
+            <?else:?>Отправить
+            <?endif;?>">
+            */?>
+        </form>
+    </div>
+</div>
+<?$i++;
 		} }?>

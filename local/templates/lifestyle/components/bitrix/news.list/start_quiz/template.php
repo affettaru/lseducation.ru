@@ -60,7 +60,7 @@ $this->setFrameMode(true);
 	            		
 	            	</div>
 	            <?elseif($i == 1):?>
-					<a class="js-close quiz__as__no" data-quiz="Y" href="#">Пропустить</a>
+					<a class="js-close btn btn-secondary quiz__as__no" data-quiz="Y" href="#">Пропустить</a>
 	            	<div>
 	            		
 	            		<span><?=$i?> из <?=count($arResult["ITEMS"]) ?></span>
@@ -68,7 +68,7 @@ $this->setFrameMode(true);
 	            	</div>
 	            	
 	            <?else:?>
-					<a class="js-close quiz__as__no" data-quiz="Y" href="#">Пропустить</a>
+					<a class="js-close btn btn-secondary quiz__as__no" data-quiz="Y" href="#">Пропустить</a>
 	            	<div>
 						<a class="btn btn-secondary js-prev" href="#"><span>Назад</span></a>
 	            		<span><?=$i?> из <?=count($arResult["ITEMS"]) ?></span>

@@ -40,6 +40,10 @@ if ($USER->IsAuthorized()) {LocalRedirect("/");}
                 <input type="radio" id="yandex" name="courses" value="20">
                 <label for="yandex"><img class="login__form-courses-item-logo login__form-courses-item-logo-yandex" src="<?=SITE_TEMPLATE_PATH?>/public/assets/images/logo/yandex_market_logo2_h50.png" alt="Яндекс.Маркет" title="Яндекс.Маркет"></label>
               </div>
+              <div class="login__form-courses-item">
+                <input type="radio" id="ls" name="courses" value="27">
+                <label for="ls"><img class="login__form-courses-item-logo login__form-courses-item-logo-yandex" src="<?=SITE_TEMPLATE_PATH?>/public/assets/images/logo1.png" alt="LS" title="LS"></label>
+              </div>
             </div>
           </div>
             <label>
