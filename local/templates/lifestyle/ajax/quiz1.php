@@ -72,6 +72,9 @@ if($_REQUEST["SUB"] == "Y") {
     $testHTML .= "👽 Всего попыток: ".$num_s[1]."\r\n";
     $telegram = new  Telegram\Bot\Api('1761560957:AAGKUSXqzEQuaTcu59F8enksIrBlNDhcrqU');
     $response = $telegram->sendMessage(['chat_id' => '-1001155737636','text' =>  $testHTML]);
+
+	$telegram1 = new  Telegram\Bot\Api('6414218348:AAEMfgFWspk5hHtq-XjsNWtbHbeMfpGVyw0');
+    $response1 = $telegram1->sendMessage(['chat_id' => '-1074625886','text' =>  $testHTML]);
 }
 
 	$user = new CUser;

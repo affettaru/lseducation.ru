@@ -23,9 +23,14 @@ if($stack){
     $stack = explode("_",$stack);
     $stack = $stack[1];
 }
-if($stack==$res_count) {$sdan = $stack;} else {$sdan = $stack-1;}
-
-
+// if($stack==$res_count) {$sdan = $stack;} else {$sdan = $stack-1;}
+if($stack!=$res_count) {$sdan = $stack-1;}
+if(($stack==$res_count) && ($arUser['UF_SDAN_'.$stack_into_temp] == 1)) {$sdan = $stack;} else {$sdan = $stack-1;}
+//UF_SDAN_
+echo '<pre>';
+print_r($arUser['UF_SDAN_'.$stack_into_temp]);
+echo '</pre>';
+global $proc;
 $proc = (100 / $res_count) * $sdan;
 $proc = ($proc>0 ? $proc : '0');
 $sdan = ($sdan>0 ? $sdan : '0');

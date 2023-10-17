@@ -42,7 +42,7 @@ if ($USER->IsAuthorized()) {LocalRedirect("/");}
               </div>
               <div class="login__form-courses-item">
                 <input type="radio" id="ls" name="courses" value="27">
-                <label for="ls"><img class="login__form-courses-item-logo login__form-courses-item-logo-yandex" src="<?=SITE_TEMPLATE_PATH?>/public/assets/images/logo1.png" alt="LS" title="LS"></label>
+                <label for="ls"><img class="login__form-courses-item-logo login__form-courses-item-logo-yandex" src="<?=SITE_TEMPLATE_PATH?>/public/assets/images/logo1.png" alt="LifeStyle Оптовые продажи" title="LifeStyle Оптовые продажи"></label>
               </div>
             </div>
           </div>

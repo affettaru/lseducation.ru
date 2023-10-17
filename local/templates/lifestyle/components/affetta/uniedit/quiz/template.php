@@ -29,7 +29,7 @@ $result = array_diff($BINDING,$resId[1]);
         <div class="quiz__start quiz__block">
           <div class="quiz__block--wrapper">
             <h3>Поздравляем! <br/>Вы сдали <?if($stack == $res_count):?>экзамен<?else:?>тест<?endif;?>!</h3>
-            <p>Вы отлично справились с тестированием. <br/>Ваши результаты будут отправлены в чат участников.</p><?if($stack==$num) {?><a class="gold-as button-secondary button btn" href="#"><span>Завершить <?if($stack == $res_count):?>экзамен<?else:?>тест<?endif;?></span></a><?}?>
+            <p>Вы отлично справились с тестированием. <br/>Ваши результаты будут отправлены в чат участников.</p><?if($stack==$num) {?><a class="gold-as button-secondary button btn <?=$GLOBALS['proc']==100?'hidden':''?>" href="#"><span>Завершить <?if($stack == $res_count):?>экзамен<?else:?>тест<?endif;?></span></a><?}?>
           </div><p class="gold_as--yes"></p><img src="<?=SITE_TEMPLATE_PATH?>/public/assets/images/success.svg">
         </div>
     <?} elseif($arUser["UF_SDAN_".$idv]=="0" && $arUser["UF_ATTEMPTS_".$stack]>0 && !$result) {?>
