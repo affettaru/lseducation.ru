@@ -50,6 +50,25 @@ if(preg_match_all("/#(.*?)#/", $arUser["UF_ANSWER_".$stack], $resId)){
 			}
 
 			$arrFilter[] = $addFilter;
+
+			echo '<pre>';
+			print_r($BINDING);
+			echo '</pre>';
+
+if ((!$_REQUEST['back_id'] && !$numVopros) || (count($BINDING)-1 == $numVopros)){
+
+
+    $userQ = new CUser;
+    $fields = Array(
+    "UF_TRY" => $arUser['UF_TRY']+1,
+    );
+    $userQ->Update($arUser['ID'], $fields);
+
+
+}
+
+
+
 			
 	
 			$APPLICATION->IncludeComponent(

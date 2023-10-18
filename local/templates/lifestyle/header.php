@@ -27,9 +27,9 @@ if($stack){
 if($stack!=$res_count) {$sdan = $stack-1;}
 if(($stack==$res_count) && ($arUser['UF_SDAN_'.$stack_into_temp] == 1)) {$sdan = $stack;} else {$sdan = $stack-1;}
 //UF_SDAN_
-echo '<pre>';
-print_r($arUser['UF_SDAN_'.$stack_into_temp]);
-echo '</pre>';
+// echo '<pre>';
+// print_r($arUser['UF_SDAN_'.$stack_into_temp]);
+// echo '</pre>';
 global $proc;
 $proc = (100 / $res_count) * $sdan;
 $proc = ($proc>0 ? $proc : '0');

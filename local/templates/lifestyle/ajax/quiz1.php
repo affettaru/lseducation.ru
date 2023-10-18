@@ -16,9 +16,9 @@ $arUser = CUser::GetByID($USER->GetID())->GetNext();
 if($_REQUEST["text"]) {$otvet = $_REQUEST["text"];} elseif($_REQUEST["img"]) {$otvet = $_REQUEST["img"];} elseif($_REQUEST["check"]) {$otvet = implode(",", $_REQUEST["check"]);}
 
 if($_REQUEST["SUB"] == "Y") {
-	$ATTEMPTS = $arUser["UF_ATTEMPTS_".$_REQUEST["NUM"]]+1; $result['status'] = "confirm"; $result['url']='ELEMENT_ID='.$_REQUEST["NUM"];
+	$ATTEMPTS = $arUser["UF_ATTEMPTS_".$_REQUEST["NUM"]]+1; $result['status'] = "confirm"; $result['url']='ELEMENT_ID='.$_REQUEST["NUM"]; 
 } else {
-	$ATTEMPTS = $arUser["UF_ATTEMPTS_".$_REQUEST["NUM"]]; $result['status'] = "success"; $result['url']='ELEMENT_ID='.$_REQUEST["NUM"];
+	$ATTEMPTS = $arUser["UF_ATTEMPTS_".$_REQUEST["NUM"]]; $result['status'] = "success"; $result['url']='ELEMENT_ID='.$_REQUEST["NUM"]; 
 }
 
 $res = CIBlockElement::GetList(Array(), Array("IBLOCK_ID"=>2, "ID"=>$_REQUEST["vopros_id"], "ACTIVE_DATE"=>"Y", "ACTIVE"=>"Y"), false, Array("nPageSize"=>50), Array("ID", "IBLOCK_ID", "NAME", "DATE_ACTIVE_FROM","PROPERTY_*"));
@@ -70,11 +70,11 @@ if($_REQUEST["SUB"] == "Y") {
     $testHTML .= "🎚 Попыток: ".$num_s[1]."\r\n";
     $testHTML .=   (($goit==$_REQUEST["COUNT"])?"😃":"😔")." Результат теста: " .$goit."/".$_REQUEST["COUNT"]. "\r\n";
     $testHTML .= "👽 Всего попыток: ".$num_s[1]."\r\n";
-    $telegram = new  Telegram\Bot\Api('1761560957:AAGKUSXqzEQuaTcu59F8enksIrBlNDhcrqU');
-    $response = $telegram->sendMessage(['chat_id' => '-1001155737636','text' =>  $testHTML]);
+    // $telegram = new  Telegram\Bot\Api('1761560957:AAGKUSXqzEQuaTcu59F8enksIrBlNDhcrqU');
+    // $response = $telegram->sendMessage(['chat_id' => '-1001155737636','text' =>  $testHTML]);
 
-	$telegram1 = new  Telegram\Bot\Api('6414218348:AAEMfgFWspk5hHtq-XjsNWtbHbeMfpGVyw0');
-    $response1 = $telegram1->sendMessage(['chat_id' => '-1074625886','text' =>  $testHTML]);
+	$telegram = new  Telegram\Bot\Api('6456329352:AAFKET0k7RNDcLSYfXE_kUEZUoUyAERMihg');
+    $response = $telegram->sendMessage(['chat_id' => '-4069968381','text' =>  $testHTML]);
 }
 
 	$user = new CUser;

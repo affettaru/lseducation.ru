@@ -25,12 +25,28 @@ require $_SERVER['DOCUMENT_ROOT'] . '/local/vendor/autoload.php';?>
 		$ATTEMPTS = $arUser["UF_ATTEMPTS_".$_REQUEST["NUM"]]; $result['status'] = "success"; $result['url']='ELEMENT_ID='.$_REQUEST["NUM"];
 	}
 	
-	$res = CIBlockElement::GetList(Array(), Array("IBLOCK_ID"=>2, "ID"=>$_REQUEST["vopros_id"], "ACTIVE_DATE"=>"Y", "ACTIVE"=>"Y"), false, false, Array("ID", "IBLOCK_ID", "NAME", "DATE_ACTIVE_FROM","PROPERTY_*"));
+	$res = CIBlockElement::GetList(Array(), Array("IBLOCK_ID"=>2, "ID"=>$_REQUEST["vopros_id"], "ACTIVE_DATE"=>"Y", "ACTIVE"=>"Y"), false, false, Array("ID", "IBLOCK_ID", "NAME", 'IBLOCK_SECTION_ID', "DATE_ACTIVE_FROM","PROPERTY_*"));
 	while($ob = $res->GetNextElement()){ 
 	 $arFields = $ob->GetFields();  
 	 $arProps = $ob->GetProperties();
 		 if($_REQUEST["text"]) {
+			$res = CIBlockSection::GetByID($arFields["IBLOCK_SECTION_ID"]);
+			if($ar_res = $res->Fetch()){
+				$lesson = $ar_res['NAME'];
+			}
+
 			 $names = $arProps["vopros_text"]["VALUE"];
+
+			 $testHTML = '🤖 '.$arUser["NAME"].' '.$arUser["LAST_NAME"] ." \r\n";
+			 $testHTML .= '📚 '.$lesson. "\r\n";
+			 $testHTML .= "Вопрос: ".$names."\r\n";
+			 $testHTML .= "Ответ: ".$_REQUEST["text"]."\r\n";
+	 
+			 // $telegram = new  Telegram\Bot\Api('1761560957:AAGKUSXqzEQuaTcu59F8enksIrBlNDhcrqU');
+			 // $response = $telegram->sendMessage(['chat_id' => '-1001155737636','text' =>  $testHTML]);
+	 
+			 $telegram = new  Telegram\Bot\Api('6456329352:AAFKET0k7RNDcLSYfXE_kUEZUoUyAERMihg');
+			 $response = $telegram->sendMessage(['chat_id' => '-4069968381','text' =>  $testHTML]);
 		 } 
 		 elseif($_REQUEST["img"]) {
 			 $names = $arProps["vopros_radio"]["VALUE"];
@@ -78,7 +94,7 @@ require $_SERVER['DOCUMENT_ROOT'] . '/local/vendor/autoload.php';?>
 		$save_answ = ' ';
 	}
 	
-	/*
+	
 	if($_REQUEST["SUB"] == "Y") {
 		$list = CIBlockElement::GetList(Array(), Array("IBLOCK_ID"=>1, "PROPERTY_NUM_VALUE"=>$_REQUEST["NUM"], "ACTIVE_DATE"=>"Y", "ACTIVE"=>"Y"), false, Array(), Array("ID","IBLOCK_ID","PROPERTY_name","PROPERTY_num"));
 		while($ob = $list->GetNextElement()){
@@ -89,13 +105,18 @@ require $_SERVER['DOCUMENT_ROOT'] . '/local/vendor/autoload.php';?>
 		}
 		$testHTML = '🤖 '.$arUser["NAME"].' '.$arUser["LAST_NAME"] ." \r\n";
 		$testHTML .= '📚 '.$name . "\r\n";
-		$testHTML .= "🎚 Попыток: ".$num_s[1]."\r\n";
+		$testHTML .= "🎚 Попыток: ".$arUser["UF_TRY"]."\r\n";
 		$testHTML .=   (($goit==$binding)?"😃":"😔")." Результат теста: " .$goit."/".$binding. "\r\n";
-		$testHTML .= "👽 Всего попыток: ".$num_s[1]."\r\n";
+		$testHTML .= "👽 Всего неверных попыток: ".$arUser["UF_TRY_ALL"]."\r\n";
+
 		$telegram = new  Telegram\Bot\Api('1761560957:AAGKUSXqzEQuaTcu59F8enksIrBlNDhcrqU');
 		$response = $telegram->sendMessage(['chat_id' => '-1001155737636','text' =>  $testHTML]);
+
+		// $telegram = new  Telegram\Bot\Api('6456329352:AAFKET0k7RNDcLSYfXE_kUEZUoUyAERMihg');
+		// $response = $telegram->sendMessage(['chat_id' => '-4069968381','text' =>  $testHTML]);
+
 	}
-	*/
+	
 	
 		$user = new CUser;
 		$fields = Array(

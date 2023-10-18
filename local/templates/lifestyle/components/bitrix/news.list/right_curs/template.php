@@ -27,9 +27,3 @@ $this->setFrameMode(true);?>
 		</ul>
 	<?}?>
 <?}?>
-
-<?
-echo '<pre>';
-print_r($GLOBALS['proc']);
-echo '</pre>';
-?>

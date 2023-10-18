@@ -71,6 +71,8 @@ $goodAnswers = $arUser[$curTestUF];
 $saveAnswers = $arUser['UF_SAVE_ANSWERS']; 
 $saveAnswers = explode('#', $arUser['UF_SAVE_ANSWERS']);
 
+//$ATTEMPTS = $arUser['UF_ATTEMPTS_'.$GLOBALS['stack_into_temp']]; 
+
 foreach ($saveAnswers as $key => $value) {
 	if ($value != ''){
 		$saveAnswers[$key] = explode('|', $value);
@@ -85,15 +87,10 @@ foreach ($saveAnswers as $key => $value) {
 	unset($saveAnswers[$key][0]);
 }
 
-
-
-
 ?>
 <?foreach ($Item as $key => $value) {
 
-// echo '<pre>';
-// print_r($value["ID"]);
-// echo '</pre>';
+
 			if((count($arResult["ITEMS"])=='1') && (($activeElements - 1) > $goodAnswers)){?>
 <div class="uiz-ajax">
 
@@ -114,6 +111,7 @@ foreach ($saveAnswers as $key => $value) {
                 <input type="hidden" name="NUM" value="<?=$arParams["NUM"]?>">
                 <input type="hidden" name="user" value="<?=$USER->GetID()?>">
                 <input type="hidden" name="test" value="<?=$arParams['NUM']?>">
+				<input type="hidden" name="attemts" value="<?=$ATTEMPTS?>">
                 <input type="hidden" name="restart" value="Y">
                 <button id="<?=$value["ID"]?>" data_id="<?=$arParams["NUM_VOPROS"];?>" type="submit"
                     class="button-secondary button quiz__modal-button btn">
@@ -131,7 +129,6 @@ foreach ($saveAnswers as $key => $value) {
 </div>
 
 <?} else {
-			
 			if($value["type"]=='radio') {$fieldset = 'image';} elseif($value["type"]=='text') {$fieldset = 'text';} elseif($value["type"]=='checkbox') {$fieldset = 'checkbox';}?>
 <div class="quiz__modal--wrapper <?if($n[0] == $i):?>active<?endif;?>">
     <div class="quiz__modal--header"><span>вопрос <?=$i?> / <?=$arParams["BINDING"]?></span>
@@ -224,3 +221,6 @@ foreach ($saveAnswers as $key => $value) {
 </div>
 <?$i++;
 		} }?>
+
+
+
