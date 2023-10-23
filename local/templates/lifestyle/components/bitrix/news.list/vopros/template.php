@@ -104,6 +104,39 @@ foreach ($saveAnswers as $key => $value) {
 			<img class="fail-img" src="/local/templates/lifestyle/public/assets/images/fail.svg">
         </div>
 
+        <?
+        $user = new CUser;
+        $fields = Array( 
+            "UF_SAVE_ANSWERS" => '',
+            'UF_TRY' => intval($arUser['UF_TRY'])-1,
+        ); 
+        $user->Update($arUser["ID"], $fields);
+        $strError .= $user->LAST_ERROR;
+
+        $list = CIBlockElement::GetList(Array(), Array("IBLOCK_ID"=>1, "PROPERTY_NUM_VALUE"=>$arParams["NUM"], "ACTIVE_DATE"=>"Y", "ACTIVE"=>"Y"), false, Array(), Array("ID","IBLOCK_ID","PROPERTY_name","PROPERTY_num"));
+		while($ob = $list->GetNextElement()){
+			$el = $ob->GetFields();
+			$arProps = $ob->GetProperties([],["code"=>"binding"]);
+			$binding = count($arProps["binding"]["VALUE"]);
+			$name = $el["PROPERTY_NAME_VALUE"];
+		}
+
+        $goit = $arUser["UF_EXT_".$arParams["NUM"]]+1;
+
+        $testHTML = '🤖 '.$arUser["NAME"].' '.$arUser["LAST_NAME"] ." \r\n";
+        $testHTML .= '📚 '.$name . "\r\n";
+        $testHTML .= "🎚 Попыток: ".(intval($arUser['UF_TRY'])-1)."\r\n";
+        $testHTML .=   (($goit==$binding)?"😃":"😔")." Результат теста: " .$goit."/".$binding. "\r\n";
+        $testHTML .= "👽 Всего неверных попыток: ".($arUser["UF_TRY_ALL"]+1)."\r\n";
+        
+        $telegram = new  Telegram\Bot\Api('1761560957:AAGKUSXqzEQuaTcu59F8enksIrBlNDhcrqU');
+        $response = $telegram->sendMessage(['chat_id' => '-1001155737636','text' =>  $testHTML]);
+        
+        // $telegram = new  Telegram\Bot\Api('6456329352:AAFKET0k7RNDcLSYfXE_kUEZUoUyAERMihg');
+        // $response = $telegram->sendMessage(['chat_id' => '-4069968381','text' =>  $testHTML]);
+        
+        ?>
+
         <div class="quiz__modal--body">
             <form class="quiz__form quiz_sub_form" id="form" action="/local/templates/lifestyle/ajax/quiz_restart.php">
                 <input type="hidden" name="vopros_id" value="<?=$value["ID"]?>">

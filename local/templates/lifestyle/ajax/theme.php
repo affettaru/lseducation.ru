@@ -51,9 +51,9 @@ if(preg_match_all("/#(.*?)#/", $arUser["UF_ANSWER_".$stack], $resId)){
 
 			$arrFilter[] = $addFilter;
 
-			echo '<pre>';
-			print_r($BINDING);
-			echo '</pre>';
+			// echo '<pre>';
+			// print_r($BINDING);
+			// echo '</pre>';
 
 if ((!$_REQUEST['back_id'] && !$numVopros) || (count($BINDING)-1 == $numVopros)){
 

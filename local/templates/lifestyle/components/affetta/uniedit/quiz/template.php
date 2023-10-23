@@ -50,14 +50,14 @@ $result = array_diff($BINDING,$resId[1]);
                 </div>
                 <div class="quiz__start--body">
                     <div class="quiz__start--info">
-                        <div><strong>Без ограничений</strong>
-                            <p>Ограничение по времени: </p>
+                        <div><strong>Ограничение по времени:</strong>
+                            <p>Без ограничений</p>
                         </div>
-                        <div><strong><?=count($BINDING)?> <i title="Tooltip">?</i></strong>
-                            <p><?=sklon(count($BINDING),"Вопросов","Вопрос","Вопроса")?>: </p>
+                        <div><strong><?=sklon(count($BINDING),"Вопросов","Вопрос","Вопроса")?>: </strong>
+                            <p><?=count($BINDING)?> <i title="Tooltip">?</i></p>
                         </div>
-                        <div><strong>Без ограничений</strong>
-                            <p>Количество попыток: </p>
+                        <div><strong>Количество попыток:</strong>
+                            <p>Без ограничений</p>
                         </div>
                     </div>
                     <div class="quiz__start--btn"><a class="btn btn-primary"><span>Пройти <?if($stack == $res_count):?>экзамен<?else:?>тест<?endif;?></span></a></div>
