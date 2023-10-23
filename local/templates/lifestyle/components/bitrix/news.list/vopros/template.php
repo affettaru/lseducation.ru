@@ -132,6 +132,7 @@ foreach ($saveAnswers as $key => $value) {
         $telegram = new  Telegram\Bot\Api('1761560957:AAGKUSXqzEQuaTcu59F8enksIrBlNDhcrqU');
         $response = $telegram->sendMessage(['chat_id' => '-1001155737636','text' =>  $testHTML]);
         
+        //Тестовый бот
         // $telegram = new  Telegram\Bot\Api('6456329352:AAFKET0k7RNDcLSYfXE_kUEZUoUyAERMihg');
         // $response = $telegram->sendMessage(['chat_id' => '-4069968381','text' =>  $testHTML]);
         
