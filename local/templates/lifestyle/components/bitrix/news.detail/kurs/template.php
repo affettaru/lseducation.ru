@@ -32,7 +32,7 @@ $this->setFrameMode(true);
 	    </div>
 	<?} elseif($arResult["PROPERTIES"]["youtube"]["VALUE"]) {?>
 	    <div class="video as-load-video">
-		<iframe width="100%" height="580" src="<?=$arResult["PROPERTIES"]["youtube"]["VALUE"]?>?rel=0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+		<iframe class="youtube_iframe" src="<?=$arResult["PROPERTIES"]["youtube"]["VALUE"]?>?rel=0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
         <!-- <a href="https://youtu.be/<?=$arResult["PROPERTIES"]["youtube"]["VALUE"]?>" class="video-gr" data-fancybox></a>
 	    	<video class="load_video" tip="youtube" data-rel="<?=$arResult["PROPERTIES"]["youtube"]["VALUE"]?>" poster="<?=$crop?>"></video> -->
