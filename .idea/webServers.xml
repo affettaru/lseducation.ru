@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="3777decf-754e-431a-a809-1782300abe01" name="lseducation.ru" url="http://c772410p.beget.tech">
+        <fileTransfer host="c772410p.beget.tech" port="21">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+      <webServer id="4ec79954-c3c7-40e5-b4f9-db94d9db756b" name="lseducation.ru ssh">
+        <fileTransfer rootFolder="/home/c/c772410p/" accessType="SFTP" host="c772410p.beget.tech" port="22" sshConfigId="30e51f46-b06b-41eb-b4d7-d83154831d2b" sshConfig="c772410p_affettassh@c772410p.beget.tech:22 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

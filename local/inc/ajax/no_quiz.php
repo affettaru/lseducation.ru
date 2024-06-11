@@ -3,7 +3,7 @@ if($_REQUEST["no_quiz"]=="Y"){
 	global $USER;
 	$USER->GetID();
 	$kurs = kurs($USER->GetID());
-	$stack = array_pop($kurs);
+	if(is_array($kurs))$stack = array_pop($kurs);
 	$arUser = CUser::GetByID($USER->GetID())->GetNext();
 
 	$user = new CUser;

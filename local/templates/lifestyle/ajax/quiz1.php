@@ -1,5 +1,5 @@
 <?include($_SERVER['DOCUMENT_ROOT']."/bitrix/modules/main/include/prolog_before.php");
-require $_SERVER['DOCUMENT_ROOT'] . '/local/vendor/autoload.php';?>
+//require $_SERVER['DOCUMENT_ROOT'] . '/local/vendor/autoload.php';?>
 <?
 //$_REQUEST["vopros_id"] id вопроса
 //$_REQUEST["img"] ответ типа радио
@@ -16,25 +16,25 @@ $arUser = CUser::GetByID($USER->GetID())->GetNext();
 if($_REQUEST["text"]) {$otvet = $_REQUEST["text"];} elseif($_REQUEST["img"]) {$otvet = $_REQUEST["img"];} elseif($_REQUEST["check"]) {$otvet = implode(",", $_REQUEST["check"]);}
 
 if($_REQUEST["SUB"] == "Y") {
-	$ATTEMPTS = $arUser["UF_ATTEMPTS_".$_REQUEST["NUM"]]+1; $result['status'] = "confirm"; $result['url']='ELEMENT_ID='.$_REQUEST["NUM"]; 
+	$ATTEMPTS = $arUser["UF_ATTEMPTS_".$_REQUEST["NUM"]]+1; $result['status'] = "confirm"; $result['url']='ELEMENT_ID='.$_REQUEST["NUM"];
 } else {
-	$ATTEMPTS = $arUser["UF_ATTEMPTS_".$_REQUEST["NUM"]]; $result['status'] = "success"; $result['url']='ELEMENT_ID='.$_REQUEST["NUM"]; 
+	$ATTEMPTS = $arUser["UF_ATTEMPTS_".$_REQUEST["NUM"]]; $result['status'] = "success"; $result['url']='ELEMENT_ID='.$_REQUEST["NUM"];
 }
 
 $res = CIBlockElement::GetList(Array(), Array("IBLOCK_ID"=>2, "ID"=>$_REQUEST["vopros_id"], "ACTIVE_DATE"=>"Y", "ACTIVE"=>"Y"), false, Array("nPageSize"=>50), Array("ID", "IBLOCK_ID", "NAME", "DATE_ACTIVE_FROM","PROPERTY_*"));
-while($ob = $res->GetNextElement()){ 
- $arFields = $ob->GetFields();  
+while($ob = $res->GetNextElement()){
+ $arFields = $ob->GetFields();
  $arProps = $ob->GetProperties();
 	 if($_REQUEST["text"]) {$names = $arProps["vopros_text"]["VALUE"];} elseif($_REQUEST["img"]) {$names = $arProps["vopros_radio"]["VALUE"];} elseif($_REQUEST["check"]) {$names = $arProps["vopros_checkbox"]["VALUE"];}
 	 if($names!=""){$answ = $arUser["UF_ANSWER_".$_REQUEST["NUM"]].'   #'.$arFields["ID"].'# '.'Вопрос: '.$names.'  Ответ: '.'('.$otvet.')';}
-		
+
 		if($_REQUEST["img"]) {
 			if($arProps["pr_otvet_radio"]["~VALUE"]=="Да") {
 			    if($arProps["otvet_radio"]["~VALUE"]==$_REQUEST["img"]) {
 			    	$modradio = 1;
 				} else {
 					$nomodradio = 1;
-				} 
+				}
 			} else {
 				$modradio = 1;
 			}
@@ -70,8 +70,12 @@ if($_REQUEST["SUB"] == "Y") {
     $testHTML .= "🎚 Попыток: ".$num_s[1]."\r\n";
     $testHTML .=   (($goit==$_REQUEST["COUNT"])?"😃":"😔")." Результат теста: " .$goit."/".$_REQUEST["COUNT"]. "\r\n";
     $testHTML .= "👽 Всего попыток: ".$num_s[1]."\r\n";
-    // $telegram = new  Telegram\Bot\Api('1761560957:AAGKUSXqzEQuaTcu59F8enksIrBlNDhcrqU');
-    // $response = $telegram->sendMessage(['chat_id' => '-1001155737636','text' =>  $testHTML]);
+//	$testHTML .= "quiz1";
+
+//LSTESTBOT
+    $telegram = new  Telegram\Bot\Api('6627732496:AAG_rrpzT9zd5RW69S34CC3gCQrqujbJ1ss');
+    $response = $telegram->sendMessage(['chat_id' => '-4192924621','text' =>  $el]);
+//LSTESTBOT
 
 	$telegram = new  Telegram\Bot\Api('6456329352:AAFKET0k7RNDcLSYfXE_kUEZUoUyAERMihg');
     $response = $telegram->sendMessage(['chat_id' => '-4069968381','text' =>  $testHTML]);
@@ -79,13 +83,13 @@ if($_REQUEST["SUB"] == "Y") {
 
 	$user = new CUser;
 	$fields = Array(
-	"UF_SDAN_".$_REQUEST["NUM"]=>$sdan, 
+	"UF_SDAN_".$_REQUEST["NUM"]=>$sdan,
 	"UF_EXT_".$_REQUEST["NUM"]=>$goit,
 	"UF_NOEXT_".$_REQUEST["NUM"]=>$nogoit,
 	"UF_ANSWER_".$_REQUEST["NUM"] =>$answ,
 	"UF_ATTEMPTS_".$_REQUEST["NUM"] => $num_s[1],
 	"UF_NO_QUIZ_" => $arUser["UF_NO_QUIZ"],
-	); 
+	);
 	$user->Update($USER->GetID(), $fields);
 	$strError .= $user->LAST_ERROR;
 	echo json_encode($result);

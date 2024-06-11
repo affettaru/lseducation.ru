@@ -37,6 +37,9 @@
             $result['status'] = "error";
             $result['message'] = "Заполните Email";
         }
+
+
+
         if($_REQUEST["courses"]=="15"){
             $sdan = "UF_SDAN_OZON_1";
         }
@@ -45,7 +48,23 @@
         }
         elseif($_REQUEST["courses"]=="20"){
             $sdan = "UF_SDAN_YANDEX_1";
+        } elseif ($_REQUEST["courses"]=="") {
+            $result['status'] = "error";
+            $result['message'] = "Выберите курс";
+        } else {
+
+            $arFilter = array('IBLOCK_ID' => 1);
+            $arSelect = array('ID', 'NAME', 'CODE');
+            $rsSections = CIBlockSection::GetList(array(), $arFilter, false, $arSelect);
+            if ($arSection = $rsSections->GetNext()) {
+                $sdan = "UF_SDAN_".$arSection['CODE']."_1";
+            }
+
         }
+
+        // echo '<pre>';
+        // print_r($_REQUEST);
+        // echo '</pre>';
 
         global $USER;
         if(empty($result['status'])) {
@@ -60,6 +79,17 @@
                 }
                 elseif($_REQUEST["courses"]=="20"){
                     $arrGroups_new = array(3,4,37); // в какие группы хотим добавить
+                } else {
+
+                    $arFilter = array('IBLOCK_ID' => 1, 'SECTION_ID' => $_REQUEST["courses"]);
+                    $arSelect = array('ID', 'NAME', 'CODE');
+                    $rsEls = CIBlockElement::GetList(array(), $arFilter, false, $arSelect);
+                    if ($rsEl = $rsEls->GetNext()) {
+                        $Groups = CGroup::GetList(($by="c_sort"), ($order="desc"), array("STRING_ID"=>"T_".$rsEl['CODE']))->NavNext(true, "f_");
+                        $arrGroups_new = array(3,4, $Groups["ID"]);
+                    }
+                    
+        
                 }
                 
                 $arrGroups_old = $USER->GetUserGroupArray(); // получим текущие группы

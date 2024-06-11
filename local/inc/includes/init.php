@@ -1,5 +1,5 @@
 <?
-require $_SERVER['DOCUMENT_ROOT'] . '/local/vendor/autoload.php';
+//require_once $_SERVER['DOCUMENT_ROOT'] . '/local/vendor/autoload.php';
 //defaults
 foreach($_POST as $key=>$val) if($val==$_POST[$key.'_default_value']) $_POST[$key] = '';
 // db for backup
@@ -8,6 +8,9 @@ $DB->Query("SET wait_timeout=28800");
 CModule::IncludeModule('iblock');
 CModule::IncludeModule('catalog');
 CModule::IncludeModule('sale');
+
+use Bitrix\Main\Loader;
+use Bitrix\Iblock\PropertyEnumerationTable;
 
 //include($_SERVER['DOCUMENT_ROOT']."/local/inc/function.php");
 
@@ -19,7 +22,7 @@ if($iblock){
 		while($ob = $cs->GetNextElement()){ 
 		 $arFields = $ob->GetFields();  
 		 $arProps = $ob->GetProperties();
-		$c = GetIBlockElement($c['ID']);
+		if(is_array($c) )$c = GetIBlockElement($c['ID']);
 		if(function_exists("t_item")) $c = t_item($c);
 		$can['auth_text'] = $arProps["auth_text"]["~VALUE"]["TEXT"];
 		$can['privet'] = $arProps["privet"]["~VALUE"]["TEXT"];
@@ -99,12 +102,55 @@ function kurs(&$idUser){
 }
 
 //событие изменения элемента
-AddEventHandler("iblock", "OnAfterIBlockElementAdd", "goodProps");
-function goodProps(&$arFields){
-	if($arFields['IBLOCK_ID']==1){
-			$enum = CIBlockPropertyEnum::GetList(Array(),Array("IBLOCK_ID"=>1,"PROPERTY_ID"=>21,"ID"=>$arFields["PROPERTY_VALUES"][21][0]["VALUE"]))->GetNext();
+AddEventHandler("iblock", "OnBeforeIBlockElementAdd", "addLessonNumber");
+function addLessonNumber(&$arFields){
+	if (!function_exists('str_contains')) {
+		function str_contains($haystack, $needle) {
+			return $needle !== '' && mb_strpos($haystack, $needle) !== false;
+		}
+	}
 
-			$group_id = $enum["VALUE"];
+	if($arFields['IBLOCK_ID']==1){	
+
+
+		$res = CIBlockSection::GetByID($arFields['IBLOCK_SECTION']['0']);
+		if($ar_res = $res->GetNext()){
+			if(!str_contains($arFields['CODE'] ,$ar_res['CODE'])){
+				global $APPLICATION;
+				$APPLICATION->ThrowException("Название урока должно содержать название курса. Перед номером урока нужен пробел. Например, 'Курс по вышивке урок 1'");
+				return false;
+			}
+		}
+
+
+	
+		$rsElement = CIBlockElement::GetList(
+			array(),
+			array(
+				"CODE" => str_replace('_UROK', '', $arFields['CODE']),
+				'IBLOCK_ID' => 1,
+			),
+			false,
+			false,
+			array("ID")
+		);
+		if($arElement = $rsElement->fetch()) {
+			if ($arElement['ID']>0){
+			global $APPLICATION;
+            $APPLICATION->ThrowException("Элемент с CODE '{$arFields['CODE']}' уже существует!");
+				return false;
+			}
+		}
+
+
+			
+
+			$arFields['CODE'] = str_replace('_UROK', '', $arFields['CODE']);
+			$enum = CIBlockPropertyEnum::Add(Array('PROPERTY_ID'=>21, 'VALUE'=>$arFields['CODE'], 'XML_ID' =>md5($arFields['CODE']), 'SORT' =>2400, 'DEF'=>'N'));
+			
+			$arFields['PROPERTY_VALUES']['num'] = $enum;
+
+			$group_id = $arFields['CODE'];
 
 			//попытки
 			$attempt = 'UF_ATTEMPTS_'.$group_id;
@@ -132,10 +178,49 @@ function goodProps(&$arFields){
 	}
 }
 
+// //событие изменения элемента
+// AddEventHandler("iblock", "OnAfterIBlockElementAdd", "goodProps");
+// function goodProps(&$arFields){
+// 	if($arFields['IBLOCK_ID']==1){
+// 			$enum = CIBlockPropertyEnum::GetList(Array(),Array("IBLOCK_ID"=>1,"PROPERTY_ID"=>21,"ID"=>$arFields["PROPERTY_VALUES"][21][0]["VALUE"]))->GetNext();
+
+// 			$group_id = $enum["VALUE"];
+
+// 			//попытки
+// 			$attempt = 'UF_ATTEMPTS_'.$group_id;
+// 			addUserProperty($attempt, '2', "string", "Попытки сдачи теста ".$group_id."й экзамен");
+// 			//dump($id); die();
+
+// 			//ответы
+// 			$answer = 'UF_ANSWER_'.$group_id;
+// 			addUserProperty($answer, $group_id.'0', "string", "Ответы квиза ".$group_id."й экзамен");
+
+// 			//кол-во правильных
+// 			$ext = 'UF_EXT_'.$group_id;
+// 			addUserProperty($ext, $group_id.'0', "string", "Кол-во правильных ответов ".$group_id."й экзамен");
+
+// 			//кол-во неправильных
+// 			$noext = 'UF_NOEXT_'.$group_id;
+// 			addUserProperty($noext, $group_id.'0', "string", "Кол-во неправильных ответов ".$group_id."й экзамен");
+
+// 			//экзамен сдан
+// 			$sdan = 'UF_SDAN_'.$group_id;
+// 			addUserProperty($sdan, $group_id.'0', "boolean", $group_id."й Экзамен сдан?");
+
+// 			//создаем группу
+// 			addGroup($group_id);
+// 	}
+// }
+
 //событие удаления элемента
 AddEventHandler("iblock", "OnBeforeIBlockElementDelete", "OnIBlockElementDelete");
 function OnIBlockElementDelete($ID){
 	$stacks = CIBlockElement::GetList(Array(), Array("IBLOCK_ID"=>1, "ID"=>$ID), false, false, Array("ID", "IBLOCK_ID","PROPERTY_num"))->GetNext();
+	$result = CIBlockPropertyEnum::Delete($stacks['PROPERTY_NUM_ENUM_ID']);
+
+	echo '<pre>';
+	print_r($stacks);
+	echo '</pre>';
 	if($stacks["ID"]){
 
 		//удалим группу
@@ -175,7 +260,7 @@ function OnIBlockElementDelete($ID){
 
 class SaleOrderEvents 
 {
-	function fillLocation(&$arUserResult, $request, &$arParams, &$arResult) 
+	public static function fillLocation(&$arUserResult, $request, &$arParams, &$arResult)
 	{
 		$registry = \Bitrix\Sale\Registry::getInstance(\Bitrix\Sale\Registry::REGISTRY_TYPE_ORDER);
 		$orderClassName = $registry->getOrderClassName();
@@ -220,17 +305,15 @@ function formatBytes($size, $precision = 2){
     return round(pow(1024, $base - floor($base)), $precision) .' '. $suffixes[floor($base)];
 }
 
-AddEventHandler("main", "OnBeforeUserUpdate", Array("MyClass", "OnBeforeUserUpdateHandler"));
+AddEventHandler("main", "OnBeforeUserUpdate", "OnBeforeUserUpdateHandler");
 
-class MyClass
-{
     function OnBeforeUserUpdateHandler(&$arFields)
     {
 	global $USER;
 	$USER->GetID();
 	$arUser = CUser::GetByID($USER->GetID())->GetNext();
 	$ids = kurs($USER->GetID());
-	$stack = array_pop($ids);
+		if(is_array($ids)) $stack = array_pop($ids);
 	$stacks = CIBlockElement::GetList(Array(), Array("IBLOCK_ID"=>1, "PROPERTY_NUM_VALUE"=>$stack, "ACTIVE_DATE"=>"Y", "ACTIVE"=>"Y"), false, Array("nPageSize"=>50), Array("ID", "IBLOCK_ID", "NAME", "DATE_ACTIVE_FROM","PROPERTY_binding"));
 	//Посчитаем кол-во вопросов
 	while($obStack = $stacks->GetNext()){ 
@@ -238,7 +321,7 @@ class MyClass
 		if($obStack["PROPERTY_BINDING_VALUE"]!="") {$ascount[] = $obStack["PROPERTY_BINDING_VALUE"];}
 	}
 	//Проверим сколько вопросов ответил пользователь и сравним с изначальным кл-ом
-	$numOtvet = $arFields["UF_EXT_".$stack]+$arFields["UF_NOEXT_".$stack];
+	$numOtvet = intval($arFields["UF_EXT_".$stack])+intval($arFields["UF_NOEXT_".$stack]);
 		if($numOtvet >= count($ascount)) {
 			if($arFields["UF_NOEXT".$stack]>0 || $arFields["UF_EXT_".$stack]=="") {
 				$arFields["UF_SDAN_".$stack]=0;
@@ -248,7 +331,6 @@ class MyClass
 			}
 		}
     }
-}
 
 AddEventHandler("main", "OnAfterUserLogin", "OnAfterUserLoginHandler");
 

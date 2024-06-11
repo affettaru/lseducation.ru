@@ -14,7 +14,7 @@ $this->setFrameMode(true);
 	global $USER;
 	$USER->GetID();
 	$kurs = kurs($USER->GetID());
-	$stack = array_pop($kurs);
+	if(is_array($kurs))$stack = array_pop($kurs);
 	$arUser = CUser::GetByID($USER->GetID())->GetNext();
 	if(preg_match_all("/#(.*?)#/", $arUser["UF_ANSWER".$stack], $resId))
 	$result = array_diff($arResult["PROPERTIES"]["binding"]["VALUE"],$resId[1]);
@@ -23,7 +23,7 @@ $this->setFrameMode(true);
 ?>
 	<div class="title"><span><?=$arResult["NAME"]?></span>
 		<h1><?=$arResult["PROPERTIES"]["name"]["VALUE"]?></h1>
-		<?if($arResult["PROPERTIES"]["description"]["~VALUE"]["TEXT"]):?><p><?=$arResult["PROPERTIES"]["description"]["~VALUE"]["TEXT"]?></p><?endif;?>
+		<?if($arResult["PROPERTIES"]["description"]["VALUE"] && $arResult["PROPERTIES"]["description"]["VALUE"]["TEXT"]):?><p><?=html_entity_decode($arResult["PROPERTIES"]["description"]["VALUE"]["TEXT"])?></p><?endif;?>
 	</div>
 	<?if($arResult["PROPERTIES"]["amazon"]["VALUE"]){?>
 	    <div class="video as-load-video">
@@ -32,13 +32,11 @@ $this->setFrameMode(true);
 	    </div>
 	<?} elseif($arResult["PROPERTIES"]["youtube"]["VALUE"]) {?>
 	    <div class="video as-load-video">
-		<iframe class="youtube_iframe" src="<?=$arResult["PROPERTIES"]["youtube"]["VALUE"]?>?rel=0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
-        <!-- <a href="https://youtu.be/<?=$arResult["PROPERTIES"]["youtube"]["VALUE"]?>" class="video-gr" data-fancybox></a>
-	    	<video class="load_video" tip="youtube" data-rel="<?=$arResult["PROPERTIES"]["youtube"]["VALUE"]?>" poster="<?=$crop?>"></video> -->
+		<img src="<?=$crop?>" alt="">
+		<!-- <iframe id="myframe" class="youtube_iframe" src="<?=$arResult["PROPERTIES"]["youtube"]["VALUE"]?>?rel=0&autoplay=1" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> -->
 	    </div>
-	<?}
-	else{?>
+
+	<?} else{?>
 	    <div class="video as-load-video video_img">
 	    	<img src="<?=$crop?>" alt="">
 	    </div>
@@ -70,4 +68,35 @@ $this->setFrameMode(true);
 	<?}?>
 <script src="https://player.live-video.net/1.7.0/amazon-ivs-player.min.js"></script>
 
+<style>
+.video { position: relative; padding-bottom: 56.25%; /* 16:9 */ height: 0; }
+.video img { position: absolute; display: block; top: 0; left: 0; width: 100%; z-index: 20; cursor: pointer; }
+.video:after { content: ""; position: absolute; display: block; 
+    background: url(play-button.png) no-repeat 0 0; 
+    top: 45%; left: 45%; width: 46px; height: 36px; z-index: 30; cursor: pointer; } 
+.video iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
 
+/* image poster clicked, player class added using js */
+.video.player img { display: none; }
+.video.player:after { display: none; }
+</style>
+
+<script>
+$(function() { 
+    var videos  = $(".video");
+
+        videos.on("click", function(){
+            var elm = $(this),
+                conts   = elm.contents(),
+                le      = conts.length,
+                ifr     = null;
+
+            for(var i = 0; i<le; i++){
+              if(conts[i].nodeType == 8) ifr = conts[i].textContent;
+            }
+
+            elm.addClass("player").html(ifr);
+            elm.off("click");
+        });
+});
+		</script>

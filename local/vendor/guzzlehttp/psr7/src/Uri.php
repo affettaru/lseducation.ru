@@ -420,49 +420,49 @@ class Uri implements UriInterface
         return $uri;
     }
 
-    public function getScheme()
-    {
-        return $this->scheme;
-    }
+//    public function getScheme()
+//    {
+//        return $this->scheme;
+//    }
 
-    public function getAuthority()
-    {
-        $authority = $this->host;
-        if ($this->userInfo !== '') {
-            $authority = $this->userInfo . '@' . $authority;
-        }
+//    public function getAuthority()
+//    {
+//        $authority = $this->host;
+//        if ($this->userInfo !== '') {
+//            $authority = $this->userInfo . '@' . $authority;
+//        }
+//
+//        if ($this->port !== null) {
+//            $authority .= ':' . $this->port;
+//        }
+//
+//        return $authority;
+//    }
 
-        if ($this->port !== null) {
-            $authority .= ':' . $this->port;
-        }
+//    public function getUserInfo()
+//    {
+//        return $this->userInfo;
+//    }
 
-        return $authority;
-    }
+//    public function getHost()
+//    {
+//        return $this->host;
+//    }
 
-    public function getUserInfo()
-    {
-        return $this->userInfo;
-    }
+//    public function getPort()
+//    {
+//        return $this->port;
+//    }
 
-    public function getHost()
-    {
-        return $this->host;
-    }
+//    public function getPath()
+//    {
+//        return $this->path;
+//    }
 
-    public function getPort()
-    {
-        return $this->port;
-    }
-
-    public function getPath()
-    {
-        return $this->path;
-    }
-
-    public function getQuery()
-    {
-        return $this->query;
-    }
+//    public function getQuery()
+//    {
+//        return $this->query;
+//    }
 
     public function getFragment()
     {

@@ -1,15 +1,14 @@
 <?include($_SERVER['DOCUMENT_ROOT']."/bitrix/modules/main/include/prolog_before.php");
-
 global $USER;
 $ids = kurs($USER->GetID());
-$stack = array_pop($ids);
+if(is_array($ids))$stack = array_pop($ids);
 $rsUser = CUser::GetByID($USER->GetID());
 $arUser = $rsUser->Fetch();
 
 if($_REQUEST["ELEMENT_ID"]=="") {
     $idv = $stack;
 } else {
-    if($stack>=$_REQUEST["ELEMENT_ID"]){ $idv = $_REQUEST["ELEMENT_ID"];} else { $idv = $stack;} 
+    if($stack>=$_REQUEST["ELEMENT_ID"]){ $idv = $_REQUEST["ELEMENT_ID"];} else { $idv = $stack;}
 }
 
 $list = CIBlockElement::GetList(Array(), Array("IBLOCK_ID"=>1, "PROPERTY_NUM_VALUE"=>$idv, "ACTIVE_DATE"=>"Y", "ACTIVE"=>"Y"), false, false, Array("ID","PROPERTY_binding","PROPERTY_num"));
@@ -39,10 +38,10 @@ if(preg_match_all("/#(.*?)#/", $arUser["UF_ANSWER_".$stack], $resId)){
       	<div class="uiz-ajax" <?if(!$result || $arUser["UF_SDAN_".$idv] == '1'):?>style="display:none;"<?endif;?>>
 			<?if($result) {$bild = $result; $numVopros = count($BINDING)-count($result);} else {$bild = $BINDING;}
 			global $arrFilter;
-			$addFilter = Array("LOGIC"=>"OR","ID"=>0); 
-		
+			$addFilter = Array("LOGIC"=>"OR","ID"=>0);
+
 			$backID = end($resId[1]);
-			
+
 			//dump($result);
 			$lists = CIBlockElement::GetList(Array(), Array("IBLOCK_ID"=>2, "ID"=>$bild, "ACTIVE_DATE"=>"Y", "ACTIVE"=>"Y"), false, false, Array("ID","PROPERTY_binding"));
 			while($els = $lists->GetNext()){
@@ -51,29 +50,21 @@ if(preg_match_all("/#(.*?)#/", $arUser["UF_ANSWER_".$stack], $resId)){
 
 			$arrFilter[] = $addFilter;
 
-			// echo '<pre>';
-			// print_r($BINDING);
-			// echo '</pre>';
 
-if ((!$_REQUEST['back_id'] && !$numVopros) || (count($BINDING)-1 == $numVopros)){
-
-
+if($_REQUEST['restart'] == 'Y'){
     $userQ = new CUser;
     $fields = Array(
-    "UF_TRY" => $arUser['UF_TRY']+1,
+        "UF_TRY" => intval($arUser['UF_TRY'])+1,
+        "UF_ATTEMPTS_" . $idv => intval($arUser['UF_ATTEMPTS_' . $idv])+1,
     );
     $userQ->Update($arUser['ID'], $fields);
-
-
 }
 
 
 
-			
-	
 			$APPLICATION->IncludeComponent(
-				"bitrix:news.list", 
-				"vopros", 
+				"bitrix:news.list",
+				"vopros",
 				array(
 					"ACTIVE_DATE_FORMAT" => "d.m.Y",
 					"ADD_SECTIONS_CHAIN" => "Y",
@@ -152,5 +143,7 @@ if ((!$_REQUEST['back_id'] && !$numVopros) || (count($BINDING)-1 == $numVopros))
 					"FILE_404" => ""
 				),
 				false
-			);?>
+			);
+
+?>
 		</div>

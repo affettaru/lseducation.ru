@@ -37,6 +37,7 @@ $(function(){
             if(result.status=="success"){
                 
                 let answers = result.last_answer;
+ 
              
                 $(".uiz_block-ajax").load('/local/templates/lifestyle/ajax/theme.php', {'ajax':'Y', 'back_id':back_id, 'count_id': countId, 'answers':answers});
                 setTimeout(() => {
@@ -72,7 +73,7 @@ $(function(){
                 } 
                 
                 $(".uiz_block-ajax").load('/local/templates/lifestyle/ajax/theme.php', {'ajax':'Y', 'restart':restart});
-                
+        
                 setTimeout(() => {
                     $(".quiz__start--btn").click();
 
@@ -117,11 +118,12 @@ $(function(){
     });
 
     //AMAZON
-        var PLAYBACK_URL =  'https://lstraning.s3.us-east-2.amazonaws.com/output/'+P_URL;
-        if (IVSPlayer.isPlayerSupported) {
-            const player = IVSPlayer.create();
-            player.attachHTMLVideoElement(document.getElementById('video-player'));
-            player.load(PLAYBACK_URL);
-            player.play();
-        }   
+    //     var PLAYBACK_URL =  'https://lstraning.s3.us-east-2.amazonaws.com/output/'+P_URL;
+    //     if (IVSPlayer.isPlayerSupported) {
+    //         const player = IVSPlayer.create();
+    //         player.attachHTMLVideoElement(document.getElementById('video-player'));
+    //         player.load(PLAYBACK_URL);
+    //         player.play();
+    //     }
+//     дает ошибку
 });

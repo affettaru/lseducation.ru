@@ -18,10 +18,10 @@ if(preg_match("#/([0-9])0([0-9]+)$#", $_SERVER['REQUEST_URI'], $mat) || preg_mat
       <section>
         <div class="container">
           <div class="error__wrapper"><img src="<?=SITE_TEMPLATE_PATH?>/public/assets/images/e404.svg">
-            <h3>Страница не найдена</h3><a class="btn btn-primary" href="#"><span>Вернуться на главную</span></a>
+            <h3>Страница не найдена</h3><a class="btn btn-primary" href="/"><span>Вернуться на главную</span></a>
           </div>
         </div>
-    <nav><a class="collapse" href="#"></a>
+    <nav><a class="collapse" href="/"></a>
         <?$APPLICATION->IncludeComponent(
   "bitrix:news.list", 
   "right_curs", 

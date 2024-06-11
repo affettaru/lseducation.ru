@@ -1,5 +1,5 @@
 <?
-if(NOT_CHECK_PERMISSIONS!=true && !preg_match("#/$#",$_SERVER['REQUEST_URI']) && !preg_match("#\.|\?#",$_SERVER['REQUEST_URI'])) LocalRedirect($_SERVER['REQUEST_URI'].'/');
+// if(NOT_CHECK_PERMISSIONS!=true && !preg_match("#/$#",$_SERVER['REQUEST_URI']) && !preg_match("#\.|\?#",$_SERVER['REQUEST_URI'])) LocalRedirect($_SERVER['REQUEST_URI'].'/');
 function iarga_echo($str){
 	echo htmlspecialchars($str);
 }
@@ -666,8 +666,11 @@ function addGroup($groupId){
 
 //удаление группу пользователей
 function deleteGroup($id){
-	$id = explode('_',$id);
-	$Groups = CGroup::GetList(($by="c_sort"), ($order="desc"), array("STRING_ID"=>"T_".$id[1]))->NavNext(true, "f_");
+	// $id = explode('_',$id);
+
+	$Groups = CGroup::GetList(($by="c_sort"), ($order="desc"), array("STRING_ID"=>"T_".$id))->NavNext(true, "f_");
+
+
 	if($Groups["ID"]){
 		$group = new CGroup;
 		$group->Delete($Groups["ID"]);

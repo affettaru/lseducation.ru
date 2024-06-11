@@ -261,13 +261,13 @@ function roundcrop($img,$width,$height,$id){
 
 
 // Обработчики для картинок
-AddEventHandler("iblock", "OnAfterIBlockElementAdd", Array("VidClass", "OnAfterIBlockElementAddHandler"));
+//AddEventHandler("iblock", "OnAfterIBlockElementAdd", Array("VidClass", "OnAfterIBlockElementAddHandler"));
 AddEventHandler("iblock", "OnBeforeIBlockElementUpdate", Array("VidClass", "OnBeforeIBlockElementUpdateHandler"));
 
 class VidClass{
     // создаем обработчик события "OnAfterIBlockElementAdd"
 	// Если в описании картинки - ссылка на ютуб, то картинку ставим с ютуба.
-    function OnBeforeIBlockElementUpdateHandler(&$arFields){
+    public static function OnBeforeIBlockElementUpdateHandler(&$arFields){
 
 		// Для множественны полей привязка по ссылке с youtube
 		foreach($arFields['PROPERTY_VALUES'][3] as $key=>$val){
@@ -359,13 +359,13 @@ function iIBlockPhotoSave(&$fields){
 
 
 // регистрируем обработчик
-AddEventHandler("iblock", "OnAfterIBlockElementAdd", Array("VidLoadClass", "OnAfterIBlockElementAddHandler"));
+//AddEventHandler("iblock", "OnAfterIBlockElementAdd", Array("VidLoadClass", "OnAfterIBlockElementAddHandler"));
 AddEventHandler("iblock", "OnBeforeIBlockElementUpdate", Array("VidLoadClass", "OnBeforeIBlockElementUpdateHandler"));
 
 class VidLoadClass{
     // создаем обработчик события "OnAfterIBlockElementAdd"
 	// При изменении и добавлении элемента ищем на ютубе картинку и загружаем в превью. Обязательно свойсово lock — это флаг, который не позволяет функции входить в рекурсию.
-    function OnBeforeIBlockElementUpdateHandler(&$arFields){
+    public static function OnBeforeIBlockElementUpdateHandler(&$arFields){
         if ($arFields["IBLOCK_ID"] == 1){
 			$good = CIBlockElement::GetById($arFields['ID'])->GetNext();
 			
@@ -383,7 +383,7 @@ class VidLoadClass{
 			//print '<pre>'; print_r($arFields); die('</pre>');
         }
     }
-	function vlink($inp){
+    public static function vlink($inp){
 		if(preg_match("#youtu.be/([0-9a-zA-Z\-_]+)#",$inp,$mat))  $inp = $mat[1];
 		elseif(preg_match("#youtube.com/embed/([0-9a-zA-Z\-_]+)#",$inp,$mat))  $inp = $mat[1];
 		elseif(preg_match("#\?v=#",$inp,$mat)){

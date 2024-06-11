@@ -5,15 +5,14 @@ $res_count = CIBlockElement::GetList(Array(), $arFilter, Array(), false, Array()
 
 global $USER;
 $ids = kurs($USER->GetID());
-$stack = array_pop($ids);
+if(is_array($ids)) $stack = array_pop($ids);
 $rsUser = CUser::GetByID($USER->GetID());
 $arUser = $rsUser->Fetch();
 if(!$_REQUEST["ELEMENT_ID"]) {
     $idv = $stack;
 } else {
-    if($stack>=$_REQUEST["ELEMENT_ID"]){ $idv = $_REQUEST["ELEMENT_ID"];} else { $idv = $stack;} 
+    if($stack>=$_REQUEST["ELEMENT_ID"]){ $idv = $_REQUEST["ELEMENT_ID"];} else { $idv = $stack;}
 }
-
 $list = CIBlockElement::GetList(Array(), Array("IBLOCK_ID"=>1, "PROPERTY_NUM_VALUE"=>$idv, "ACTIVE_DATE"=>"Y", "ACTIVE"=>"Y"), false, false, Array("ID","NAME","PROPERTY_binding","PROPERTY_num"));
 while($el = $list->GetNext()){
     $id = $el["ID"];
@@ -21,6 +20,7 @@ while($el = $list->GetNext()){
     $num = $el["PROPERTY_NUM_VALUE"];
     if($el["PROPERTY_BINDING_VALUE"]!=""){$BINDING[] = $el["PROPERTY_BINDING_VALUE"];}
 }
+
 
 if(preg_match_all("/#(.*?)#/", $arUser["UF_ANSWER_".$stack], $resId))
 $result = array_diff($BINDING,$resId[1]);
@@ -32,7 +32,7 @@ $result = array_diff($BINDING,$resId[1]);
             <p>Вы отлично справились с тестированием. <br/>Ваши результаты будут отправлены в чат участников.</p><?if($stack==$num) {?><a class="gold-as button-secondary button btn <?=$GLOBALS['proc']==100?'hidden':''?>" href="#"><span>Завершить <?if($stack == $res_count):?>экзамен<?else:?>тест<?endif;?></span></a><?}?>
           </div><p class="gold_as--yes"></p><img src="<?=SITE_TEMPLATE_PATH?>/public/assets/images/success.svg">
         </div>
-    <?} elseif($arUser["UF_SDAN_".$idv]=="0" && $arUser["UF_ATTEMPTS_".$stack]>0 && !$result) {?>
+    <?} elseif($arUser["UF_SDAN_".$idv]=="0" && $arUser["UF_EXT_".$stack] != null && !$result) {?>
           <div class="quiz__start quiz__block">
             <div class="quiz__block--wrapper">
               <h3>Упс! Нам очень жаль. <br/>Вы не сдали <?if($stack == $res_count):?>экзамен<?else:?>тест<?endif;?>.</h3>
@@ -43,7 +43,6 @@ $result = array_diff($BINDING,$resId[1]);
             if(preg_match_all("/#(.*?)#/", $arUser["UF_ANSWER_".$stack], $resId))
             $result = array_diff($BINDING,$resId[1]);?>
         <?if(count($BINDING)>0 && !$result):?>
-
             <div class="quiz__start" <?=$arParams['IS_BACK'] > 0?'style="display:none"':''?> <?=$arParams['RESTART'] == "Y"?'style="display:none"':''?>>
                 <div class="quiz__start--header">
                     <h3><?if($stack == 8):?>Экзамен<?else:?>Тест<?endif;?> по теме «<?=$name?>»</h3>

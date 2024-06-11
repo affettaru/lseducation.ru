@@ -2,6 +2,17 @@
 require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
 $APPLICATION->SetTitle("Регистрация");
 if ($USER->IsAuthorized()) {LocalRedirect("/");}
+$arFilter = array('IBLOCK_ID' => 1);
+$arSelect = array('ID', 'NAME', 'CODE');
+$rsSections = CIBlockSection::GetList(array(), $arFilter, false, $arSelect);
+$Curses = [];
+while ($arSection = $rsSections->GetNext()) {
+  $Curses[] = [
+    'NAME' => $arSection['NAME'],
+    'CODE' => $arSection['CODE'],
+    'ID' => $arSection['ID']
+  ]; 
+}
 ?>
     <div class="login__form">
         <form action="<?=SITE_TEMPLATE_PATH?>/ajax/reg.php" class="regform">
@@ -25,7 +36,13 @@ if ($USER->IsAuthorized()) {LocalRedirect("/");}
                 <input type="password" name='confirm_password' placeholder="Повторите пароль*">
 
             </label>
-          <div class="login__form-courses login__form-courses_mod1">
+            <select name="courses" id="Curses">
+                <option value="">Выберите курс</option>
+                <?foreach ($Curses as $key => $Curs) {?>
+                  <option value="<?=$Curs['ID']?>"><?=$Curs['NAME']?></option>
+                <?}?>
+            </select>
+          <!-- <div class="login__form-courses login__form-courses_mod1">
             <div class="login__form-courses-title">Выберите курс</div>
             <div class="login__form-courses-inner">
               <div class="login__form-courses-item">
@@ -45,14 +62,14 @@ if ($USER->IsAuthorized()) {LocalRedirect("/");}
                 <label for="ls"><img class="login__form-courses-item-logo login__form-courses-item-logo-wildberries" src="<?=SITE_TEMPLATE_PATH?>/public/assets/images/logo1.png" alt="LifeStyle Оптовые продажи" title="LifeStyle Оптовые продажи"></label>
               </div>
             </div>
-          </div>
+          </div> -->
             <label>
                 <input name="checkbox" type="checkbox">
                 <p>Подтверждаю согласие c <a href="#" data-modal data-target="#user">Пользовательским соглашением</a> и <a href="#" data-modal data-target="#policy">Политикой конфиденциальности</a></p>
             </label>
             <button class="btn btn-secondary"><span>Зарегистрироваться</span></button>
             <hr>
-            <p>Уже зарегистрировались? <a href="/auth/">Перейти к авторизации</a></p>
+            <p>Уже зарегистрировались? <a href="/auth/">Войти</a></p>
         </form>
     </div>
 <?require($_SERVER["DOCUMENT_ROOT"]."/bitrix/footer.php");?>
