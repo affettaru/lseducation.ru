@@ -15,6 +15,7 @@ $fields = array(
     "UF_NO_QUIZ" => $arUser["UF_NO_QUIZ"],
     "UF_TRY_ALL" => $arUser["UF_TRY_ALL"] + 1,
     "UF_TRY" => $arUser["UF_TRY"] + 1,
+    "UF_ANSWER_" . $stack => "",
 );
 $user->Update($USER->GetID(), $fields);
 

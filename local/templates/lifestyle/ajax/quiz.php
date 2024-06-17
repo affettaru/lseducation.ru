@@ -160,38 +160,6 @@ if (!$_REQUEST["back_id"]) {
             $binding = count($arProps["binding"]["VALUE"]);
             $name = $el["PROPERTY_NAME_VALUE"];
         }
-
-
-        $testHTML = '🤖 ' . $arUser["NAME"] . ' ' . $arUser["LAST_NAME"] . " \r\n";
-        $testHTML .= '📚 ' . $name . "\r\n";
-        $testHTML .= "🎚 Попыток: " . (intval($arUser["UF_TRY"]) + 1) . "\r\n";
-        $testHTML .= (($goit == $binding) ? "😃" : "😔") . " Результат теста: " . $goit . "/" . $binding . "\r\n";
-        $testHTML .= "👽 Всего неверных попыток: " . ($arUser["UF_TRY_ALL"] + 1) . "\r\n";
-
-//        $testHTML .= 'request_sub';
-        $testHTML = urlencode($testHTML);
-
-        // $telegram = new  Telegram\Bot\Api($bot_id);
-        // $response = $telegram->sendMessage(['chat_id' => $chat_id,'text' => $testHTML]);
-
-        //тестовый бот
-        //LSTESTBOT
-        $curl = curl_init();
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => 'https://api.telegram.org/bot'.$bot_id.'/sendmessage?chat_id='.$chat_id.'&text=' . $testHTML,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'GET',
-        ));
-        $response = curl_exec($curl);
-        curl_close($curl);
-//        $telegram = new  Telegram\Bot\Api($bot_id);
-//        $response = $telegram->sendMessage(['chat_id' => $chat_id,'text' => $testHTML]);
-        //LSTESTBOT
-
     }
 
 

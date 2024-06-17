@@ -7,7 +7,6 @@ $rsUser = CUser::GetByID($USER->GetID());
 $arUser = $rsUser->Fetch();
 
 $SECTION_ID = ($arUser["UF_SECTION"] ? $arUser["UF_SECTION"] : '15');
-
 if ($_REQUEST["ELEMENT_ID"] == "") {
     $idv = $stack;
 } else {
@@ -53,7 +52,7 @@ while ($el = $list->GetNext()) {
                 "DISPLAY_PREVIEW_TEXT" => "Y",
                 "DISPLAY_TOP_PAGER" => "N",
                 "ELEMENT_CODE" => "",
-                "BINDING" => count($BINDING),
+                "BINDING" => $BINDING ? count($BINDING) : "",
                 "ELEMENT_ID" => $id,
                 "FIELD_CODE" => array(
                     0 => "",

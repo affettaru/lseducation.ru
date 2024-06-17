@@ -2,7 +2,8 @@
 require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
 $APPLICATION->SetTitle("Lifestyle Education");
 if (!$USER->IsAuthorized()) {LocalRedirect("/auth/register/");}
-?>	<?$APPLICATION->IncludeComponent(
+?>
+<?$APPLICATION->IncludeComponent(
     "affetta:uniedit",
     "index",
     Array(
