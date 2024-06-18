@@ -60,7 +60,7 @@ while ($ob = $list->GetNextElement()) {
 $goit = $arUser["UF_EXT_" . $num] + 1;
 $testHTML = '🤖 ' . $arUser["NAME"] . ' ' . $arUser["LAST_NAME"] . " \r\n";
 $testHTML .= '📚 ' . $name . "\r\n";
-$testHTML .= "🎚 Попыток: " . (intval($arUser['UF_TRY'])) . "\r\n";
+$testHTML .= "🎚 Попыток: " . (intval($arUser["UF_ATTEMPTS_" . $stack])) . "\r\n";
 $testHTML .= (($goit == $binding) ? "😃" : "😔") . " Результат теста: " . $goit . "/" . $binding . "\r\n";
 $testHTML .= "👽 Всего неверных попыток: " . (intval($arUser["UF_TRY_ALL"])) . "\r\n";
 $testHTML = urlencode($testHTML);
