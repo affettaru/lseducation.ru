@@ -9,10 +9,10 @@
           </advancedOptions>
         </fileTransfer>
       </webServer>
-      <webServer id="4ec79954-c3c7-40e5-b4f9-db94d9db756b" name="lseducation.ru ssh">
-        <fileTransfer rootFolder="/home/c/c772410p/" accessType="SFTP" host="c772410p.beget.tech" port="22" sshConfigId="30e51f46-b06b-41eb-b4d7-d83154831d2b" sshConfig="c772410p_affettassh@c772410p.beget.tech:22 password">
+      <webServer id="27854af6-1d73-40ef-aa2e-b5f06e23558a" name="logs" url="http://c772410p.beget.tech">
+        <fileTransfer rootFolder="/test.lseducation.ru" host="c772410p.beget.tech" port="21">
           <advancedOptions>
-            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
           </advancedOptions>
         </fileTransfer>
       </webServer>

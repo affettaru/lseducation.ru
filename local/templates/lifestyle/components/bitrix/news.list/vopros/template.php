@@ -72,6 +72,9 @@ if (count($Item) < count($arResult["ITEMS"])) {
 <?
 //Получаем количество вопросов текущего теста
 $activeElements = CIBlockSection::GetSectionElementsCount($curSection, array("CNT_ACTIVE" => "Y"));
+
+$textCount = CIBlockElement::GetList([], ["!PROPERTY_7_VALUE" => false, "IBLOCK_SECTION_ID" => $curSection], array(), false,  array('ID', 'NAME', "PROPERTY_vopros_text_VALUE"));
+//echo "<pre>"; var_dump($dbRes->Fetch()); echo "</pre>";
 //Получаем код текущего теста и создаем название UF из пользователя
 $curTestUF = 'UF_EXT_' . $arParams['NUM'];
 //Получаем количество верных ответов пользователя для текущего пользователя
@@ -97,7 +100,7 @@ foreach ($saveAnswers as $key => $value) {
     unset($saveAnswers[$key][0]);
 }
 
-$list = CIBlockElement::GetList(array(), array("IBLOCK_ID" => 1, "PROPERTY_NUM_VALUE" => $arParams["NUM"], "ACTIVE_DATE" => "Y", "ACTIVE" => "Y"), false, array(), array("ID", "IBLOCK_ID", "PROPERTY_name", "PROPERTY_num", "IBLOCK_SECTION_ID"));
+$list = CIBlockElement::GetList(array(), array("IBLOCK_ID" => 1, "PROPERTY_NUM_VALUE" => $arParams["NUM"], "ACTIVE_DATE" => "Y", "ACTIVE" => "Y"), false, array(), array("ID", "IBLOCK_ID", "PROPERTY_name", "PROPERTY_num", "IBLOCK_SECTION_ID", "NAME"));
 while ($ob = $list->GetNextElement()) {
     $el = $ob->GetFields();
     $arProps = $ob->GetProperties([], ["code" => "binding"]);
@@ -105,12 +108,17 @@ while ($ob = $list->GetNextElement()) {
     $name = $el["PROPERTY_NAME_VALUE"];
     $section_id = $el["IBLOCK_SECTION_ID"];
 }
+
+// первый из текстовых вопросов
+$hasMistakes = $activeElements - $textCount > $goodAnswers ;
+
 ?>
+
 <? foreach ($Item as $key => $value) {
-    if ((count($arResult["ITEMS"]) == '0') && (($activeElements - 1) > $goodAnswers)) {
+
+    if (($value["type"] == 'text') && $hasMistakes && count($arResult["ITEMS"]) != $activeElements) {
         ?>
         <div class="uiz-ajax">
-
 
             <div class="quiz__modal--wrapper active">
                 <div class="quiz__modal--header flex flex-sb">
@@ -123,23 +131,64 @@ while ($ob = $list->GetNextElement()) {
                 </div>
 
                 <?
-                $user = new CUser;
-                $fields = array(
-                    "UF_SAVE_ANSWERS" => '',
-                    'UF_TRY' => intval($arUser['UF_TRY']),
-                );
-                $user->Update($arUser["ID"], $fields);
-                $strError .= $user->LAST_ERROR;
+                global $USER;
+                $USER->GetID();
+                $kurs = kurs($USER->GetID());
+                if (is_array($kurs)) $stack = array_pop($kurs);
+                $arUser = CUser::GetByID($USER->GetID())->GetNext();
 
 
-                $goit = $arUser["UF_EXT_" . $arParams["NUM"]] + 1;
 
+                //LSTESTBOT
+                $ids = kurs($USER->GetID());
+                if (is_array($ids)) $stack = array_pop($ids);
+
+                $SECTION_ID = ($arUser["UF_SECTION"] ? $arUser["UF_SECTION"] : '15');
+
+                if ($_REQUEST["ELEMENT_ID"] == "") {
+                    $idv = $stack;
+                } else {
+                    if ($stack >= $_REQUEST["ELEMENT_ID"]) {
+                        $idv = $_REQUEST["ELEMENT_ID"];
+                    } else {
+                        $idv = $stack;
+                    }
+                }
+                $list = CIBlockElement::GetList(array(), array("IBLOCK_ID" => 1, "PROPERTY_NUM_VALUE" => $idv, "ACTIVE_DATE" => "Y", "ACTIVE" => "Y"), false, array(), array("ID", "PROPERTY_binding", "PROPERTY_num", "NAME"));
+                while ($el = $list->GetNext()) {
+                    $id = $el["ID"];
+                    $num = $el["PROPERTY_NUM_VALUE"];
+                    if ($el["PROPERTY_BINDING_VALUE"] != "") {
+                        $BINDING[] = $el["PROPERTY_BINDING_VALUE"];
+                    }
+                }
+
+
+                $list = CIBlockElement::GetList(array(), array("IBLOCK_ID" => 1, "PROPERTY_NUM_VALUE" => $num, "ACTIVE_DATE" => "Y", "ACTIVE" => "Y"), false, array(), array("ID", "IBLOCK_ID", "PROPERTY_name", "PROPERTY_num", "IBLOCK_SECTION_ID"));
+                while ($ob = $list->GetNextElement()) {
+                    $el = $ob->GetFields();
+                    $arProps = $ob->GetProperties([], ["code" => "binding"]);
+                    $binding = count($arProps["binding"]["VALUE"]);
+                    $name = $el["PROPERTY_NAME_VALUE"];
+                    $section_id = $el["IBLOCK_SECTION_ID"];
+                }
+
+
+                $goit = $arUser["UF_EXT_" . $num];
+
+
+                if (empty($goit)){
+                    $goit = 0;
+                }
+
+
+
+                file_put_contents($_SERVER["DOCUMENT_ROOT"] . "/test.txt", serialize($arUser));
                 $testHTML = '🤖 ' . $arUser["NAME"] . ' ' . $arUser["LAST_NAME"] . " \r\n";
                 $testHTML .= '📚 ' . $name . "\r\n";
-                $testHTML .= "🎚 Попыток: " . (intval($arUser['UF_TRY'])) . "\r\n";
+                $testHTML .= "🎚 Попыток: " . (intval($arUser["UF_ATTEMPTS_" . $stack])) + 1  . "\r\n";
                 $testHTML .= (($goit == $binding) ? "😃" : "😔") . " Результат теста: " . $goit . "/" . $binding . "\r\n";
-                $testHTML .= "👽 Всего неверных попыток: " . (intval($arUser["UF_TRY_ALL"])) . "\r\n";
-//                $testHTML .= "template";
+                $testHTML .= "👽 Всего неверных попыток: " . (intval($arUser["UF_TRY_ALL"])) + 1 . "\r\n";
                 $testHTML = urlencode($testHTML);
 
 
@@ -157,13 +206,6 @@ while ($ob = $list->GetNextElement()) {
                     $bot_id = '1761560957:AAGKUSXqzEQuaTcu59F8enksIrBlNDhcrqU';
                 }
 
-                // $telegram = new  Telegram\Bot\Api('1761560957:AAGKUSXqzEQuaTcu59F8enksIrBlNDhcrqU');
-                // $response = $telegram->sendMessage(['chat_id' => '-1001155737636','text' =>  $testHTML]);
-
-                //тестовый бот
-                //LSTESTBOT
-//                $telegram = new  Telegram\Bot\Api($bot_id);
-//                $response = $telegram->sendMessage(['chat_id' => $chat_id, 'text' => $testHTML]);
                 $curl = curl_init();
                 curl_setopt_array($curl, array(
                     CURLOPT_URL => 'https://api.telegram.org/bot'.$bot_id.'/sendmessage?chat_id='.$chat_id.'&text=' . $testHTML,
@@ -178,6 +220,18 @@ while ($ob = $list->GetNextElement()) {
                 curl_close($curl);
 
                 //LSTESTBOT
+                $user = new CUser;
+                $fields = array(
+                    "UF_SDAN_" . $stack => $arUser["UF_SDAN_" . $stack],
+                    "UF_EXT_" . $stack => "",
+                    "UF_NOEXT_" . $stack => "",
+                    "UF_ATTEMPTS_" . $stack => $arUser["UF_ATTEMPTS_" . $stack] + 1,
+                    "UF_NO_QUIZ" => $arUser["UF_NO_QUIZ"],
+                    "UF_TRY_ALL" => $arUser["UF_TRY_ALL"],
+                    "UF_TRY" => $arUser["UF_TRY"] + 1,
+                    "UF_ANSWER_" . $stack => "",
+                );
+                $user->Update($USER->GetID(), $fields);
 
                 ?>
 
@@ -263,9 +317,10 @@ while ($ob = $list->GetNextElement()) {
                                     </div>
                                 </label>
                             <? }
-                        } elseif ($value["type"] == 'text') { ?>
+                        } elseif ($value["type"] == 'text') {
+                            ?>
                             <label>
-                                <textarea type="text" name="text" placeholder="Введите вариант ответа"></textarea>
+                                <textarea type="text" name="text" placeholder="Введите вариант ответа"><?= $_SESSION["TEXT_QUESTIONS"][$value["ID"]] ? $_SESSION["TEXT_QUESTIONS"][$value["ID"]] : "" ?></textarea>
                             </label>
                         <? } elseif ($value["type"] == 'checkbox') {
                             $check = 0;
@@ -319,6 +374,7 @@ while ($ob = $list->GetNextElement()) {
         </div>
         <? $i++;
     }
+        break;
 } ?>
 
 

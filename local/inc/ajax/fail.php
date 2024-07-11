@@ -5,26 +5,11 @@ $kurs = kurs($USER->GetID());
 if (is_array($kurs)) $stack = array_pop($kurs);
 $arUser = CUser::GetByID($USER->GetID())->GetNext();
 
-$user = new CUser;
-$fields = array(
-    "UF_SDAN_" . $stack => $arUser["UF_SDAN_" . $stack],
-    "UF_EXT_" . $stack => "",
-    "UF_NOEXT_" . $stack => "",
-    "UF_ANSWER_" . "",
-    "UF_ATTEMPTS_" . $stack => $arUser["UF_ATTEMPTS_" . $stack] + 1,
-    "UF_NO_QUIZ" => $arUser["UF_NO_QUIZ"],
-    "UF_TRY_ALL" => $arUser["UF_TRY_ALL"] + 1,
-    "UF_TRY" => $arUser["UF_TRY"] + 1,
-    "UF_ANSWER_" . $stack => "",
-);
-$user->Update($USER->GetID(), $fields);
 
 
 //LSTESTBOT
 $ids = kurs($USER->GetID());
 if (is_array($ids)) $stack = array_pop($ids);
-$rsUser = CUser::GetByID($USER->GetID());
-$arUser = $rsUser->Fetch();
 
 $SECTION_ID = ($arUser["UF_SECTION"] ? $arUser["UF_SECTION"] : '15');
 
@@ -46,7 +31,6 @@ while ($el = $list->GetNext()) {
     }
 }
 
-
 $list = CIBlockElement::GetList(array(), array("IBLOCK_ID" => 1, "PROPERTY_NUM_VALUE" => $num, "ACTIVE_DATE" => "Y", "ACTIVE" => "Y"), false, array(), array("ID", "IBLOCK_ID", "PROPERTY_name", "PROPERTY_num", "IBLOCK_SECTION_ID"));
 while ($ob = $list->GetNextElement()) {
     $el = $ob->GetFields();
@@ -56,11 +40,11 @@ while ($ob = $list->GetNextElement()) {
     $section_id = $el["IBLOCK_SECTION_ID"];
 }
 
-
-$goit = $arUser["UF_EXT_" . $num] + 1;
+$goit = $arUser["UF_EXT_" . $num];
+file_put_contents($_SERVER["DOCUMENT_ROOT"] . "/test.txt", serialize($arUser));
 $testHTML = '🤖 ' . $arUser["NAME"] . ' ' . $arUser["LAST_NAME"] . " \r\n";
 $testHTML .= '📚 ' . $name . "\r\n";
-$testHTML .= "🎚 Попыток: " . (intval($arUser["UF_ATTEMPTS_" . $stack])) . "\r\n";
+$testHTML .= "🎚 Попыток: " . (intval($arUser["UF_ATTEMPTS_" . $stack]))  . "\r\n";
 $testHTML .= (($goit == $binding) ? "😃" : "😔") . " Результат теста: " . $goit . "/" . $binding . "\r\n";
 $testHTML .= "👽 Всего неверных попыток: " . (intval($arUser["UF_TRY_ALL"])) . "\r\n";
 $testHTML = urlencode($testHTML);
@@ -94,5 +78,19 @@ $response = curl_exec($curl);
 curl_close($curl);
 
 //LSTESTBOT
+$user = new CUser;
+$fields = array(
+    "UF_SDAN_" . $stack => $arUser["UF_SDAN_" . $stack],
+    "UF_EXT_" . $stack => "",
+    "UF_NOEXT_" . $stack => "",
+    "UF_ATTEMPTS_" . $stack => $arUser["UF_ATTEMPTS_" . $stack] + 1,
+    "UF_NO_QUIZ" => $arUser["UF_NO_QUIZ"],
+    "UF_TRY_ALL" => $arUser["UF_TRY_ALL"] + 1,
+    "UF_TRY" => $arUser["UF_TRY"] + 1,
+    "UF_ANSWER_" . $stack => "",
+);
+$user->Update($USER->GetID(), $fields);
+
+
 
 ?>

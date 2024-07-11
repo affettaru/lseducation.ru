@@ -41,7 +41,6 @@ $APPLICATION->IncludeComponent(
         "COMPONENT_TEMPLATE" => "quiz"
     )
 );
-
 ?>
 <div class="uiz-ajax" <? if (!$result || $arUser["UF_SDAN_" . $idv] == '1'): ?>style="display:none;"<? endif; ?>>
     <?
@@ -65,15 +64,14 @@ $APPLICATION->IncludeComponent(
     $arrFilter[] = $addFilter;
 
 
-    if ($_REQUEST['restart'] == 'Y') {
-        $userQ = new CUser;
-        $fields = array(
-            "UF_TRY" => intval($arUser['UF_TRY']) + 1,
-            "UF_ATTEMPTS_" . $idv => intval($arUser['UF_ATTEMPTS_' . $idv]) + 1,
-        );
-        $userQ->Update($arUser['ID'], $fields);
-    }
-
+    // if ($_REQUEST['restart'] == 'Y') {
+    //     $userQ = new CUser;
+    //     $fields = array(
+    //         "UF_TRY" => intval($arUser['UF_TRY']) + 1,
+    //         "UF_ATTEMPTS_" . $idv => intval($arUser['UF_ATTEMPTS_' . $idv]) + 1,
+    //     );
+    //     $userQ->Update($arUser['ID'], $fields);
+    // }
 
 
     $APPLICATION->IncludeComponent(
