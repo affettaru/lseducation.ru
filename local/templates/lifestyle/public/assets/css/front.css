@@ -1192,15 +1192,26 @@ footer .ft {
 }
 
 .quiz__modal--header-imm {
-    height: 300px;
+    height: 520px;
     margin-top: 25px;
     border-radius: 20px;
     overflow: hidden;
+}
+@media (max-width: 575px) {
+    .quiz__modal--header-imm {
+        height: unset;
+        aspect-ratio: 1 / 1;
+        }
 }
 .quiz__modal--header-imm img {
     margin-top: 0;
     height: 100%;
     max-width: inherit;
+    object-fit: contain;
+    width: unset;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .quiz__modal--reg {

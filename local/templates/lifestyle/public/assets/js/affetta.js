@@ -29,35 +29,37 @@ $(function () {
         $('.uiz-ajax').show();
     });
 
+
     $(document).on('click', '.button-back', function () {
         let back_id = $(this)[0].id
         let countId = $(this).attr('data_id')
-
+        $(this).prop("disabled", true);
         $.post("/local/templates/lifestyle/ajax/quiz.php", {'back_id': back_id, 'count_id': countId}, function (data) {
                 var result = $.parseJSON(data);
-
+                
                 if (result.status == "success") {
-
                     let answers = result.last_answer;
+                    if (answers) {
+                        $(".uiz_block-ajax").load('/local/templates/lifestyle/ajax/theme.php', {
+                            'ajax': 'Y',
+                            'back_id': back_id,
+                            'count_id': countId,
+                            'answers': answers
+                        });
 
-
-                    $(".uiz_block-ajax").load('/local/templates/lifestyle/ajax/theme.php', {
-                        'ajax': 'Y',
-                        'back_id': back_id,
-                        'count_id': countId,
-                        'answers': answers
-                    });
-                    setTimeout(() => {
-                        $(".quiz__start--btn").click()
-
-                    }, 300);
-
+                        console.log(back_id);
+                        
+                        
+                        setTimeout(() => {
+                            $(".quiz__start--btn").click()
+    
+                        }, 300);
+                    }
                 }
             }
         );
-
-
     })
+
 
     $(document).on('submit', '.quiz_sub_form', function (event) {
         //$(".quiz_sub_form").submit(function (event){
@@ -105,7 +107,6 @@ $(function () {
     $(document).on('click', '.fail', function () {
         $('.fails').load('/local/inc/ajax/fail.php', {});
         $('.quiz__block').hide();
-        console.log()
         if ($('#reload').length) {
             location.reload()
         } else {

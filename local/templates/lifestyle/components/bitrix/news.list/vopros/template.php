@@ -275,7 +275,7 @@ $hasMistakes = $activeElements - $textCount > $goodAnswers ;
         <div class="quiz__modal--wrapper <? if ($n[0] == $i): ?>active<? endif; ?>">
             <div class="quiz__modal--header"><span>вопрос <?= $i ?> / <?= $arParams["BINDING"] ?></span>
                 <h3><?= $value["vopros"] ?></h3>
-                <? if ($value["type"] == 'checkbox'): $photo = crop($value["photo_checkbox"], 820, 300, 1); ?>
+                <? if ($value["type"] == 'checkbox'): $photo = crop($value["photo_checkbox"], '', '', 1); ?>
                     <? if ($photo) { ?>
                         <div class="quiz__modal--header-imm">
                             <img src="<?= $photo ?>">
@@ -335,7 +335,7 @@ $hasMistakes = $activeElements - $textCount > $goodAnswers ;
                         } ?>
                     </fieldset>
                     <div class="button_wrapper">
-                        <? if (count($arResult["ITEMS"]) != $activeElements) { ?>
+                        <? if (count($arResult["ITEMS"]) != $activeElements && $value["type"] != 'text') { ?>
                             <button type="button" id="<?= $arParams['BACK_ID'] ?>" data_id="<?= $arParams["NUM"]; ?>"
                                     class="button-secondary button quiz__modal-button btn button-back">
                     <span>
@@ -344,7 +344,7 @@ $hasMistakes = $activeElements - $textCount > $goodAnswers ;
                             </button>
                         <? } ?>
 
-                        <button <? if (count($arResult["ITEMS"]) == $activeElements){ ?>style="margin-left:auto"
+                        <button <? if (count($arResult["ITEMS"]) == $activeElements || $value["type"] == 'text'){ ?>style="margin-left:auto"
                                 <? } ?>type="submit" id="<?= $value["ID"] ?>" data_id="<?= $arParams["NUM_VOPROS"]; ?>"
                                 class="button-secondary button quiz__modal-button btn"
                             <?= is_array($saveAnswers[$value["ID"]]) != '' ? '' : 'disabled="disabled"' ?>>

@@ -1,5 +1,9 @@
 <?include($_SERVER['DOCUMENT_ROOT']."/bitrix/modules/main/include/prolog_before.php");?>
-	<?if($_POST["tip"] == "amazon"):?>
+    <?if($_POST["tip"] == "rutube"):?>
+    <div class="video as-load-video">
+        <iframe width="1200" height="700" src="<?=$_POST["video"]?>" frameBorder="0" allow="clipboard-write; autoplay" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+    </div>
+    <? elseif ($_POST["tip"] == "amazon"):?>
 	    <div class="video as-load-video">
 	        <video id="video-player" style="width:100%; margin:0 auto; display:block;" controls></video>
 	    </div>

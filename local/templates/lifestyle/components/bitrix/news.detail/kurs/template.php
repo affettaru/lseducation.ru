@@ -25,9 +25,13 @@ $this->setFrameMode(true);
 		<h1><?=$arResult["PROPERTIES"]["name"]["VALUE"]?></h1>
 		<?if($arResult["PROPERTIES"]["description"]["VALUE"] && $arResult["PROPERTIES"]["description"]["VALUE"]["TEXT"]):?><p><?=html_entity_decode($arResult["PROPERTIES"]["description"]["VALUE"]["TEXT"])?></p><?endif;?>
 	</div>
-	<?if($arResult["PROPERTIES"]["amazon"]["VALUE"]){?>
+    <?if($arResult["PROPERTIES"]["rutube"]["~VALUE"]){?>
+        <div class="video as-load-video">
+            <video class="load_video" tip="rutube" data-rel="<?=preg_match('/src="([^"]+)"/', $arResult["PROPERTIES"]["rutube"]["~VALUE"], $match) ? $match[1] : ''?>" poster="<?=$crop?>"></video>
+        </div>
+	<?} elseif($arResult["PROPERTIES"]["amazon"]["VALUE"]){?>
 	    <div class="video as-load-video">
-        <a href="<?=$arResult["PROPERTIES"]["amazon"]["VALUE"]?>" class="video-gr" data-fancybox></a>
+            <a href="<?=$arResult["PROPERTIES"]["amazon"]["VALUE"]?>" class="video-gr" data-fancybox></a>
 	    	<video class="load_video" tip="amazon" data-rel="<?=$arResult["PROPERTIES"]["amazon"]["VALUE"]?>" poster="<?=$crop?>"></video>
 	    </div>
 	<?} elseif($arResult["PROPERTIES"]["youtube"]["VALUE"]) {?>
@@ -71,9 +75,8 @@ $this->setFrameMode(true);
 <style>
 .video { position: relative; padding-bottom: 56.25%; /* 16:9 */ height: 0; }
 .video img { position: absolute; display: block; top: 0; left: 0; width: 100%; z-index: 20; cursor: pointer; }
-.video:after { content: ""; position: absolute; display: block; 
-    background: url(play-button.png) no-repeat 0 0; 
-    top: 45%; left: 45%; width: 46px; height: 36px; z-index: 30; cursor: pointer; } 
+.video:after { content: ""; position: absolute; display: block;
+    top: 45%; left: 45%; width: 46px; height: 36px; z-index: 30; cursor: pointer; }
 .video iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
 
 /* image poster clicked, player class added using js */
@@ -82,7 +85,7 @@ $this->setFrameMode(true);
 </style>
 
 <script>
-$(function() { 
+$(function() {
     var videos  = $(".video");
 
         videos.on("click", function(){
