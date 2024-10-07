@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="SshConfigs">
-    <configs>
-      <sshConfig authType="PASSWORD" host="c772410p.beget.tech" id="30e51f46-b06b-41eb-b4d7-d83154831d2b" port="22" nameFormat="DESCRIPTIVE" username="c772410p_affettassh" useOpenSSHConfig="true" />
-    </configs>
-  </component>
-</project>
