@@ -13,6 +13,7 @@ if ($_REQUEST["ELEMENT_ID"] == "") {
     } else {
         $idv = $stack;
     }
+    $idv = $_REQUEST["ELEMENT_ID"];
 }
 
 $list = CIBlockElement::GetList(array(), array("IBLOCK_ID" => 1, "PROPERTY_NUM_VALUE" => $idv, "ACTIVE_DATE" => "Y", "ACTIVE" => "Y"), false, false, array("ID", "PROPERTY_binding", "PROPERTY_num"));

@@ -16,7 +16,7 @@
 			<?php endif?>
 			<?=GetMessage("INCORRECT_QUESTION_MESSAGE");?>: <?php echo $arResult["INCORRECT_QUESTION"]["INCORRECT_MESSAGE"]?>
 		</div>
-	<?php endif?>
+	<?php endif?>	
 	<?php if (intval($arResult["TEST"]["CURRENT_INDICATION"]) > 0):?>
 		<div><?php if ($arResult["TEST"]["CURRENT_INDICATION_PERCENT"] == "Y"):?><?=GetMessage("LEARNING_CURRENT_RIGHT_COUNT")?> - <?php echo $arResult["COMPLETE_PERCENT"]?>%.<?php endif?><?php if ($arResult["TEST"]["CURRENT_INDICATION_MARK"] == "Y" && $arResult["CURRENT_MARK"]):?> <?=GetMessage("LEARNING_CURRENT_MARK")?> - <?php echo $arResult["CURRENT_MARK"]?>.<?php endif?></div>
 	<?php endif?>
@@ -146,7 +146,7 @@
 				<?=bitrix_sessid_post()?>
 				<input type="hidden" name="back_page" value="<?=$arResult["SAFE_REDIRECT_PAGE"]?>" />
 				<div class="quiz__start--btn"><input type="submit" name="next" class="js-quiz  btn btn-primary" value="<?=GetMessage("LEARNING_BTN_START")?>"></div>
-
+				
 				</form>
             </div>
         </div>
@@ -184,7 +184,7 @@
 											<input type="checkbox" name="answer[]" value="<?=$arAnswer["ID"]?>" <?if (in_array($arAnswer["ID"], $arResult["QBAR"][$arResult["NAV"]["PAGE_NUMBER"]]["RESPONSE"])):?>checked <?endif?>/>
 											<p><?=$arAnswer["ANSWER"]?></p>
 										</label>
-									<?elseif ($arResult["QUESTION"]["QUESTION_TYPE"] == "S"):?>
+									<?elseif ($arResult["QUESTION"]["QUESTION_TYPE"] == "S"):?>	
 										<label>
 											<input type="radio" name="answer" value="<?=$arAnswer["ID"]?>" <?if (in_array($arAnswer["ID"], $arResult["QBAR"][$arResult["NAV"]["PAGE_NUMBER"]]["RESPONSE"])):?>checked <?endif?>/>
 											<img src="assets/images/quiz-form.jpg">

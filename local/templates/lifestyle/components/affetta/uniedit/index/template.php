@@ -10,11 +10,12 @@ $SECTION_ID = ($arUser["UF_SECTION"] ? $arUser["UF_SECTION"] : '15');
 if ($_REQUEST["ELEMENT_ID"] == "") {
     $idv = $stack;
 } else {
-    if ($stack >= $_REQUEST["ELEMENT_ID"]) {
-        $idv = $_REQUEST["ELEMENT_ID"];
-    } else {
-        $idv = $stack;
-    }
+    // if ($stack >= $_REQUEST["ELEMENT_ID"]) {
+    //     $idv = $_REQUEST["ELEMENT_ID"];
+    // } else {
+    //     $idv = $stack;
+    // }
+    $idv = $_REQUEST["ELEMENT_ID"];
 }
 $list = CIBlockElement::GetList(array(), array("IBLOCK_ID" => 1, "PROPERTY_NUM_VALUE" => $idv, "ACTIVE_DATE" => "Y", "ACTIVE" => "Y"), false, array(), array("ID", "PROPERTY_binding", "PROPERTY_num", "NAME"));
 while ($el = $list->GetNext()) {
@@ -84,7 +85,7 @@ while ($el = $list->GetNext()) {
                 "SET_STATUS_404" => "Y",
                 "SET_TITLE" => "N",
                 "SHOW_404" => "Y",
-                "STRICT_SECTION_CHECK" => "N",
+                "STRICT_SECTION_CHECK" => "Y",
                 "USE_PERMISSIONS" => "N",
                 "USE_SHARE" => "N",
                 "COMPONENT_TEMPLATE" => "kurs",
@@ -96,7 +97,6 @@ while ($el = $list->GetNext()) {
         <div class="uiz_block-ajax">
             <?php $APPLICATION->IncludeFile(SITE_TEMPLATE_PATH . '/ajax/theme.php'); ?>
         </div>
-
 
         <!--<div class="quiz__modal--overlay" id="quiz">
       <div class="quiz__modal">

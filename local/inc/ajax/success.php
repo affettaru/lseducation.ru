@@ -16,7 +16,7 @@ if ($arUser["UF_SECTION"] == '15') {
 } elseif ($arUser["UF_SECTION"] == '20') {
     $code = 'T_YANDEX';
 }
-
+var_dump($arUser["UF_SECTION"]);
 $exp = [];
 while ($arGroup = $rsGroups->GetNext()) {
     if (!preg_match("/T_\D+/", $arGroup['STRING_ID'], $matches)) continue;
