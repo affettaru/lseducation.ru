@@ -16,7 +16,6 @@ if ($arUser["UF_SECTION"] == '15') {
 } elseif ($arUser["UF_SECTION"] == '20') {
     $code = 'T_YANDEX';
 }
-var_dump($arUser["UF_SECTION"]);
 $exp = [];
 while ($arGroup = $rsGroups->GetNext()) {
     if (!preg_match("/T_\D+/", $arGroup['STRING_ID'], $matches)) continue;
@@ -43,14 +42,16 @@ $code .= "_";
 $kod = $kods + 1;
 $implode_kod = $code . $kod;
 
-$rsG = CGroup::GetList($by = "c_sort", $order = "asc", array("STRING_ID" => $implode_kod));
-while ($group = $rsG->GetNext()) {
-    $Groups = $group["ID"];
-}
-$asGroups[] = $Groups;
+$arUser = CUser::GetByID($USER->GetID())->GetNext();
+if ($arUser["UF_SDAN_" . $stack]) {
+    $rsG = CGroup::GetList($by = "c_sort", $order = "asc", array("STRING_ID" => $implode_kod));
+    while ($group = $rsG->GetNext()) {
+        $Groups = $group["ID"];
+    }
+    $asGroups[] = $Groups;
 
-$asGroups[] = $Groups;
-$newGroup = array_merge($arGroups, $asGroups);
-file_put_contents($_SERVER["DOCUMENT_ROOT"] . "/test.txt", json_encode($newGroup));
-CUser::SetUserGroup($USER->GetID(), $newGroup);
+    $newGroup = array_merge($arGroups, $asGroups);
+    file_put_contents($_SERVER["DOCUMENT_ROOT"] . "/test.txt", json_encode($newGroup));
+    CUser::SetUserGroup($USER->GetID(), $newGroup);
+}
 ?>
