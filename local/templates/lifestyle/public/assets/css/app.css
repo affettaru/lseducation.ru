@@ -347,23 +347,6 @@ nav ul a.current:before {
   margin-top: -13px;
 }
 
-nav ul a:before {
-  content: '';
-  background: url('../images/lock-menu.svg');
-  position: absolute;
-  width: 25px;
-  height: 25px;
-  display: inline-block;
-  left: 19px;
-  z-index: 9;
-  top: 50%;
-  margin-top: -13px;
-}
-
-nav ul a.done:before {
-  background: url("../images/done.svg") center no-repeat;
-}
-
 nav ul a.current span {
   color: #fff !important;
 }

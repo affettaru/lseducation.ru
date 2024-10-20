@@ -10,7 +10,7 @@ global $cont;
     <p>Все материалы сайта защищены авторским правом и являются объектом коммерческой тайны</p>
   </div>
   <!--<a href="#" data-modal data-target="#user">Пользовательское соглашение</a>-->
-  <a target="blanck" href="https://affetta.ru/">Сделано в Affetta</a>
+  <a target="blank"></a>
 </footer>
     <div class="quiz__modal--overlay" id="user">
       <div class="quiz__modal">

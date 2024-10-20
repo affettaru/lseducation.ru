@@ -79,7 +79,7 @@ $sdan = ($sdan > 0 ? $sdan : '0');
         Asset::getInstance()->addCss(SITE_TEMPLATE_PATH . "/public/vendors/jquery.fancybox.min.css");
         Asset::getInstance()->addCss(SITE_TEMPLATE_PATH . "/public/assets/css/app.css?v=37");
         Asset::getInstance()->addCss(SITE_TEMPLATE_PATH . "/public/assets/css/affetta.css?v=37");
-        Asset::getInstance()->addCss(SITE_TEMPLATE_PATH . "/public/assets/css/front.css?v=37");
+        Asset::getInstance()->addCss(SITE_TEMPLATE_PATH . "/public/assets/css/front.css?v=38");
         Asset::getInstance()->addCss(SITE_TEMPLATE_PATH . "/public/assets/css/affetta_mod1.css?v=37");
 
         Asset::getInstance()->addJs(SITE_TEMPLATE_PATH . "/public/vendors/jquery/dist/jquery.min.js");

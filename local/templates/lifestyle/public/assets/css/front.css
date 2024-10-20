@@ -438,7 +438,7 @@ nav ul a.current {
     border-radius: 0;
 }
 
-nav ul a.current:before {
+nav ul a:before {
     height: 100%!important;
 }
 
@@ -983,14 +983,11 @@ nav ul a {
     background-repeat: no-repeat!important;
 }
 
-nav ul a.done {
-    background-image: url(../images/done.svg);
-}
 nav ul a.current.active {
     background-image: url(../images/current.svg);
 }
 nav ul a.current {
-    background-image: url(../images/svg/done-green.svg);
+    background-image: url(../images/svg/current.svg);
 }
 nav ul a.done {
     background-image: url(../images/svg/done-green.svg);
@@ -1029,9 +1026,8 @@ nav ul a:after {
 
 nav ul a:hover:before {
     width: 100%!important;
-    -webkit-transition: all 0.7s linear 0.2s;
-    transition: all 0.7s linear 0.2s;
-z-index: 2;}
+    z-index: 2;
+}
 nav ul a:hover:after {
     height: 100%!important;
     -webkit-transition: all 0.3s linear;
@@ -1501,6 +1497,12 @@ nav ul {
         height: 70px;
         text-align: center;
         align-items: center;
+    }
+    nav ul a span {
+        display: flex;
+    }
+    nav ul a.active span {
+        font-weight: 700;
     }
 }
 

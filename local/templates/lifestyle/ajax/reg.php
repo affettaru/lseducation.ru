@@ -16,6 +16,10 @@
         $result['status'] = "error";
         $result['message'] = "Заполните пароль";
     }
+    if($_REQUEST['name']==""){
+        $result['status'] = "error";
+        $result['message'] = "Введите имя";
+    }
 
         if(check_email($_REQUEST['mail'])) {
             $_REQUEST['login_name'] = $_REQUEST['mail'];

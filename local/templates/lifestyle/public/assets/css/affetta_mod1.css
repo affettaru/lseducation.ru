@@ -144,11 +144,20 @@ body.min nav ul a.lessons_item_link {
 
 #Curses{
     border-radius: 10px;
-    padding: 19px 25px;
     border: none;
     background: #f9f9f9;
     color: #a3a6a5;
     font-size: 16px;
     width: 100%;
     margin-bottom: 15px;
+}
+
+@media (min-width: 991px) and (max-width: 1600px) {
+    nav ul li a.lessons_item_link {
+        padding: 18px 20px 13px 65px !important;
+        align-content: center;
+    }
+    nav ul a.lessons_item_link, nav ul a.lessons_item_link.current {
+        background-position: 25px center !important;
+    }
 }
