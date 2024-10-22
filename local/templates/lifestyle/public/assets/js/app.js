@@ -1,10 +1,7 @@
 'use strict';
 
 $(function() {
-    $(window).on("load",function(){
-        $("nav ul").mCustomScrollbar();
-    });
-
+  $("nav ul").mCustomScrollbar();
 
   $('.lessons__slick').slick({
     slidesToShow: 4,
