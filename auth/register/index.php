@@ -127,7 +127,7 @@ while ($arSection = $rsSections->GetNext()) {
         border-radius: 10px;
         cursor: pointer;
         width: 100%;
-        z-index: 2;
+        z-index: 5;
         background: #F9F9F9;
         user-select: none;
     }

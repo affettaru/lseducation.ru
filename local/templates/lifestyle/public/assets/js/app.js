@@ -48,13 +48,24 @@ $(function() {
         }
     })
 
-  $(document).on('change','.quiz__form', function(){
-  //$('.quiz__form').on('change', function() {
-    $(this).find('.btn').removeAttr('disabled');
+  $(document).on('change', '.quiz__form', function() {
+    const hasCheckedAnswer = $(this).find('input[type="radio"]:checked, input[type="checkbox"]:checked').length > 0;
+    const nextButton = $(this).find('.btn:not(.button-back)');
+
+    if (hasCheckedAnswer) {
+      nextButton.removeAttr('disabled');
+    } else {
+      nextButton.attr('disabled', 'disabled');
+    }
   });
 
-  $('.quiz__form').on('change', '[type="text"]', function() {
-    $(this).closest('.quiz__form').find('.btn').removeAttr('disabled');
+  $('.quiz__form').on('input', '[type="text"]', function() {
+    var inputValue = $(this).val();
+    if (inputValue.length >= 10) {
+      $(this).closest('.quiz__form').find('.btn:not(.button-back)').removeAttr('disabled');
+    } else {
+      $(this).closest('.quiz__form').find('.btn:not(.button-back)').attr('disabled', 'disabled');
+    }
   });
 
   $('.quiz__modal--overlay').on('click', '.btn', function() {

@@ -320,7 +320,7 @@ $hasMistakes = $activeElements - $textCount > $goodAnswers ;
                         } elseif ($value["type"] == 'text') {
                             ?>
                             <label>
-                                <textarea type="text" name="text" placeholder="Введите вариант ответа"><?= $_SESSION["TEXT_QUESTIONS"][$value["ID"]] ? $_SESSION["TEXT_QUESTIONS"][$value["ID"]] : "" ?></textarea>
+                                <textarea type="text" name="text" placeholder="Введите вариант ответа (не менее 10 символов)"><?= $_SESSION["TEXT_QUESTIONS"][$value["ID"]] ? $_SESSION["TEXT_QUESTIONS"][$value["ID"]] : "" ?></textarea>
                             </label>
                         <? } elseif ($value["type"] == 'checkbox') {
                             $check = 0;

@@ -1498,7 +1498,7 @@ section .container {
 .quiz__form [type="text"] {
   width: min(100%, 490px);
   height: 61px;
-  padding: 0 24px;
+  padding: 24px;
   background: #fff;
   border-radius: 10px;
   border: none;
