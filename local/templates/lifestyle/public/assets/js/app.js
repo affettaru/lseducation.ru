@@ -59,7 +59,7 @@ $(function() {
     }
   });
 
-  $('.quiz__form').on('input', '[type="text"]', function() {
+  $(document).on('input blur', '.quiz__form [type="text"]', function() {
     var inputValue = $(this).val();
     if (inputValue.length >= 10) {
       $(this).closest('.quiz__form').find('.btn:not(.button-back)').removeAttr('disabled');
