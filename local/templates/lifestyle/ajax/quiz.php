@@ -115,7 +115,7 @@ if (!$_REQUEST["back_id"]) {
             }
         } elseif ($_REQUEST["check"]) {
             if ($arProps["pr_otvet_checkbox"]["VALUE"] == "Да") {
-                $resul = array_diff($_REQUEST["check"], $arProps["otvet_checkbox"]["~VALUE"]);
+                $resul = array_merge(array_diff($arProps["otvet_checkbox"]["~VALUE"], $_REQUEST["check"]), array_diff($_REQUEST["check"], $arProps["otvet_checkbox"]["~VALUE"]));
                 if (!$resul) {
                     $modradio = 1;
                 } else {
@@ -193,6 +193,9 @@ if (!$_REQUEST["back_id"]) {
     $user->Update($USER->GetID(), $fields);
     $strError .= $user->LAST_ERROR;
     $result['USER'] = $arUser["UF_ATTEMPTS_" . $_REQUEST["NUM"]];
+
+    $result['reqcheck'] = $_REQUEST["check"];
+    $result['otvcheck'] = $arProps["otvet_checkbox"]["~VALUE"];
     echo json_encode($result);
 
 } else {
@@ -225,7 +228,7 @@ if (!$_REQUEST["back_id"]) {
             $isCorrect = $arProps["otvet_radio"]["~VALUE"] == $otvet;
         } elseif ($arProps["pr_otvet_checkbox"]["VALUE"] == "Да") {
             $otvet = explode("|", $answer);
-            $isCorrect = !array_diff($arProps["otvet_checkbox"]["~VALUE"], $otvet);
+            $isCorrect = !array_merge(array_diff($arProps["otvet_checkbox"]["~VALUE"], $otvet), array_diff($otvet, $arProps["otvet_checkbox"]["~VALUE"]));
         } else {
             $isCorrect = true;
         }
@@ -256,12 +259,12 @@ if (!$_REQUEST["back_id"]) {
     $result['status'] = "success";
     $result['url'] = 'ELEMENT_ID=' . $_REQUEST["count_id"];
     $result['USER'] = $arUser;
-//    $result['isCorrect'] = $isCorrect;
-//    $result['otvet'] = $otvet;
-//    $result['ratio'] = $arProps["pr_otvet_radio"]["VALUE"];
-//    $result['ratioVal'] = $arProps["otvet_radio"]["~VALUE"];
-//    $result['checkbox'] = $arProps["pr_otvet_checkbox"]["VALUE"];
-//    $result['checkboxVal'] = $arProps["otvet_checkbox"]["~VALUE"];
+    $result['isCorrect'] = $isCorrect;
+    $result['otvet'] = $otvet;
+    $result['ratio'] = $arProps["pr_otvet_radio"]["VALUE"];
+    $result['ratioVal'] = $arProps["otvet_radio"]["~VALUE"];
+    $result['checkbox'] = $arProps["pr_otvet_checkbox"]["VALUE"];
+    $result['checkboxVal'] = $arProps["otvet_checkbox"]["~VALUE"];
     echo json_encode($result);
 }
 
