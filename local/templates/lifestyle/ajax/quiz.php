@@ -196,43 +196,115 @@ if (!$_REQUEST["back_id"]) {
     echo json_encode($result);
 
 } else {
+    // Проверка правильности ответа на предыдущий вопрос
+    $lastAnswer = $arUser["UF_ANSWER_" . $_REQUEST["count_id"]];
+    $answerPattern = '/#' . $_REQUEST["back_id"] . '#.*?\)/';
 
-    if ($arUser["UF_EXT_" . $_REQUEST["count_id"]] > 1) {
-        $answerWright = $arUser["UF_EXT_" . $_REQUEST["count_id"]] - 1;
+    $balancedAnswer = extractBalancedAnswer($_REQUEST["back_id"], $lastAnswer);
+
+    $result['last_answer'] = $balancedAnswer;
+
+    $matchAnswer = extractBalancedContent($balancedAnswer);
+    if (!empty($matchAnswer)) {
+        $answer = $matchAnswer;
     } else {
-        $answerWright = '';
+        $answer = '';
+    }
+//    $otvet = explode("|", $answer);
+//    if (count($otvet) == 1) {
+//        $otvet = $otvet[0];
+//    }
+
+    $isCorrect = false;
+    $res = CIBlockElement::GetList(array(), array("IBLOCK_ID" => 2, "ID" => $_REQUEST["back_id"], "ACTIVE_DATE" => "Y", "ACTIVE" => "Y"), false, false, array("ID", "IBLOCK_ID", "NAME", 'IBLOCK_SECTION_ID', "DATE_ACTIVE_FROM", "PROPERTY_*"));
+    while ($ob = $res->GetNextElement()) {
+        $arFields = $ob->GetFields();
+        $arProps = $ob->GetProperties();
+        if ($arProps["pr_otvet_radio"]["VALUE"] == "Да") {
+            $otvet = $answer;
+            $isCorrect = $arProps["otvet_radio"]["~VALUE"] == $otvet;
+        } elseif ($arProps["pr_otvet_checkbox"]["VALUE"] == "Да") {
+            $otvet = explode("|", $answer);
+            $isCorrect = !array_diff($arProps["otvet_checkbox"]["~VALUE"], $otvet);
+        } else {
+            $isCorrect = true;
+        }
     }
 
-    if ($arUser["UF_NOEXT_" . $_REQUEST["count_id"]] > 1) {
-        $answerWrong = $arUser["UF_NOEXT_" . $_REQUEST["count_id"]] - 1;
+    if ($isCorrect) {
+        $answerRight = max(0, $arUser["UF_EXT_" . $_REQUEST["count_id"]] - 1);
+        $answerWrong = $arUser["UF_NOEXT_" . $_REQUEST["count_id"]];
     } else {
-        $answerWrong = '';
+        $answerRight = $arUser["UF_EXT_" . $_REQUEST["count_id"]];
+        $answerWrong = max(0, $arUser["UF_NOEXT_" . $_REQUEST["count_id"]] - 1);
     }
 
-    $answer = $arUser["UF_ANSWER_" . $_REQUEST["count_id"]];
+    // Удаляем ответ из строки
+    $lastPos = strrpos($lastAnswer, '#' . $_REQUEST["back_id"] . '#');
+    $newAnswer = ($lastPos !== false) ? substr($lastAnswer, 0, $lastPos) : $lastAnswer;
 
-    $string = $answer;
-    $char = "#" . $_REQUEST["back_id"] . "#";
-    $last_pos = strrpos($string, $char);
-    $new_string = substr($string, 0, $last_pos);
-
-    $pattern = '/#' . $_REQUEST["back_id"] . '#.*?\)/';
-    preg_match($pattern, $string, $matches);
-    $result['last_answer'] = $matches[0];
-
+    // Обновляем данные пользователя
     $user = new CUser;
-    $fields = array(
-        "UF_EXT_" . $_REQUEST["count_id"] => $answerWright,
+    $fields = [
+        "UF_EXT_" . $_REQUEST["count_id"] => $answerRight,
         "UF_NOEXT_" . $_REQUEST["count_id"] => $answerWrong,
-        "UF_ANSWER_" . $_REQUEST["count_id"] => trim($new_string),
-    );
+        "UF_ANSWER_" . $_REQUEST["count_id"] => trim($newAnswer),
+    ];
     $user->Update($USER->GetID(), $fields);
-    $strError .= $user->LAST_ERROR;
+
+    // Формируем ответ
     $result['status'] = "success";
     $result['url'] = 'ELEMENT_ID=' . $_REQUEST["count_id"];
-
-
     $result['USER'] = $arUser;
+//    $result['isCorrect'] = $isCorrect;
+//    $result['otvet'] = $otvet;
+//    $result['ratio'] = $arProps["pr_otvet_radio"]["VALUE"];
+//    $result['ratioVal'] = $arProps["otvet_radio"]["~VALUE"];
+//    $result['checkbox'] = $arProps["pr_otvet_checkbox"]["VALUE"];
+//    $result['checkboxVal'] = $arProps["otvet_checkbox"]["~VALUE"];
     echo json_encode($result);
+}
+
+function extractBalancedContent($text) {
+    $pattern = '/Ответ:\s*\((.+)\)/';
+    if (preg_match($pattern, $text, $matches)) {
+        $content = $matches[1];
+        $level = 0;
+        $result = '';
+        for ($i = 0; $i < strlen($content); $i++) {
+            if ($content[$i] === '(') {
+                $level++;
+            } elseif ($content[$i] === ')') {
+                $level--;
+                if ($level < 0) {
+                    break;
+                }
+            }
+            $result .= $content[$i];
+        }
+        return $result;
+    }
+    return null;
+}
+function extractBalancedAnswer($backId, $lastAnswer) {
+    $pattern = '/#' . preg_quote($backId, '/') . '#(.*)/';
+    if (preg_match($pattern, $lastAnswer, $matches)) {
+        $content = $matches[1];
+        $level = 0;
+        $result = '';
+        for ($i = 0; $i < strlen($content); $i++) {
+            if ($content[$i] === '(') {
+                $level++;
+            } elseif ($content[$i] === ')') {
+                $level--;
+                if ($level < 0) {
+                    break;
+                }
+            }
+            $result .= $content[$i];
+        }
+        return $result;
+    }
+    return null;
 }
 ?>
